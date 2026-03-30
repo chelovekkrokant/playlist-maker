@@ -1,5 +1,6 @@
 package com.github.chelovekkrokant.playlistmaker
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -52,7 +53,7 @@ fun MainScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF3D5AFE))
+            .background(Color(0xFF3772E7))
     ) {
         Row(
             modifier = Modifier
@@ -79,8 +80,7 @@ fun MainScreen() {
                 icon = Icons.Default.Search,
                 title = "Поиск",
                 onClick = {
-                    Toast.makeText(context, "Нажата кнопка \"Поиск\"", Toast.LENGTH_SHORT)
-                        .show()
+                    context.startActivity(Intent(context, SearchActivity::class.java))
                 }
             )
             MenuItem(
@@ -103,8 +103,7 @@ fun MainScreen() {
                 icon = Icons.Default.Settings,
                 title = "Настройки",
                 onClick = {
-                    Toast.makeText(context, "Нажата кнопка \"Настройки\"", Toast.LENGTH_SHORT)
-                        .show()
+                    context.startActivity(Intent(context, SettingsActivity::class.java))
                 }
             )
         }
@@ -144,7 +143,7 @@ fun MenuItem(icon: ImageVector, title: String, onClick: () -> Unit) {
             Text(
                 text = title,
                 modifier = Modifier.weight(1f),
-                fontSize = 16.sp,
+                fontSize = 22.sp,
                 color = Color.Black
             )
             Icon(
