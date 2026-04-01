@@ -1,8 +1,7 @@
 package com.github.chelovekkrokant.playlistmaker
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import android.content.Intent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -31,21 +30,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-class SettingsActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            SettingsScreen(onBack = { finish() })
-        }
-    }
-}
+import androidx.core.net.toUri
 
 @Composable
 fun SettingsScreen(onBack: () -> Unit) {
+    val context = LocalContext.current
+
+    val emailAddress = stringResource(R.string.email_address)
+    val emailTag = stringResource(R.string.email_tag)
+    val emailBody = stringResource(R.string.email_body)
+    val shareLink = stringResource(R.string.share_app_link)
+    val agreementUrl = stringResource(R.string.user_agreement)
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -67,11 +67,11 @@ fun SettingsScreen(onBack: () -> Unit) {
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Назад",
+                    contentDescription = stringResource(R.string.settings_back),
                 )
             }
             Text(
-                text = "Настройки",
+                text = stringResource(R.string.settings_title),
                 fontSize = 22.sp,
                 color = Color.Black
             )
@@ -79,21 +79,51 @@ fun SettingsScreen(onBack: () -> Unit) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        SettingsTabSwitch(message = "Темная тема")
-        SettingsTab(message = "Поделиться приложением", icon = Icons.Default.Share)
-        SettingsTab(message = "Написать в поддержку", icon = Icons.Default.SupportAgent)
-        SettingsTab(message = "Пользовательское соглашение", icon = Icons.AutoMirrored.Filled.KeyboardArrowRight)
+        SettingsTabSwitch(message = stringResource(R.string.settings_dark_theme))
 
+        SettingsTab(
+            message = stringResource(R.string.settings_share),
+            icon = Icons.Default.Share
+        ) {
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, shareLink)
+            }
+            context.startActivity(Intent.createChooser(shareIntent, null))
+        }
 
+        SettingsTab(
+            message = stringResource(R.string.settings_support),
+            icon = Icons.Default.SupportAgent
+        ) {
+            val supportIntent = Intent(Intent.ACTION_SENDTO).apply {
+                data = "mailto:".toUri()
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(emailAddress))
+                putExtra(Intent.EXTRA_SUBJECT, emailTag)
+                putExtra(Intent.EXTRA_TEXT, emailBody)
+            }
+            context.startActivity(supportIntent)
+        }
+
+        SettingsTab(
+            message = stringResource(R.string.settings_agreement),
+            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
+        ) {
+            val agreementIntent = Intent(Intent.ACTION_VIEW).apply {
+                data = agreementUrl.toUri()
+            }
+            context.startActivity(agreementIntent)
+        }
     }
 }
 
 @Composable
-fun SettingsTab(message: String, icon: ImageVector) {
+fun SettingsTab(message: String, icon: ImageVector, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(61.dp),
+            .height(61.dp)
+            .clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

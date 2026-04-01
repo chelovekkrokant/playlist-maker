@@ -1,6 +1,5 @@
 package com.github.chelovekkrokant.playlistmaker
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -32,23 +31,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainScreen()
+            val navController = rememberNavController()
+            PlaylistHost(navController = navController)
         }
     }
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit
+) {
     val context = LocalContext.current
+    val toastPlaylists = stringResource(R.string.toast_playlists)
+    val toastLibrary = stringResource(R.string.toast_library)
 
     Column(
         modifier = Modifier
@@ -62,7 +69,7 @@ fun MainScreen() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Playlist maker",
+                text = stringResource(R.string.app_name),
                 color = Color.White,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
@@ -71,40 +78,33 @@ fun MainScreen() {
 
         Column(
             modifier = Modifier
-                //.fillMaxWidth()
                 .fillMaxSize()
                 .background(Color.White, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             MenuItem(
                 icon = Icons.Default.Search,
-                title = "Поиск",
-                onClick = {
-                    context.startActivity(Intent(context, SearchActivity::class.java))
-                }
+                title = stringResource(R.string.menu_search),
+                onClick = onSearchClick
             )
             MenuItem(
                 icon = Icons.AutoMirrored.Filled.List,
-                title = "Плейлисты",
+                title = stringResource(R.string.menu_playlists),
                 onClick = {
-                    Toast.makeText(context, "Нажата кнопка \"Плейлисты\"", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(context, toastPlaylists, Toast.LENGTH_SHORT).show()
                 }
             )
             MenuItem(
                 icon = Icons.Default.FavoriteBorder,
-                title = "Избранное",
+                title = stringResource(R.string.menu_library),
                 onClick = {
-                    Toast.makeText(context, "Нажата кнопка \"Избранное\"", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(context, toastLibrary, Toast.LENGTH_SHORT).show()
                 }
             )
             MenuItem(
                 icon = Icons.Default.Settings,
-                title = "Настройки",
-                onClick = {
-                    context.startActivity(Intent(context, SettingsActivity::class.java))
-                }
+                title = stringResource(R.string.settings_title),
+                onClick = onSettingsClick
             )
         }
     }
@@ -113,7 +113,7 @@ fun MainScreen() {
 @Preview(widthDp = 360, heightDp = 800, showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    MainScreen()
+    MainScreen(onSearchClick = {}, onSettingsClick = {})
 }
 
 @Composable
