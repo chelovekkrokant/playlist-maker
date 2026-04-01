@@ -11,4 +11,17 @@
     <string name="settings_support">Написать в поддержку</string>
     <string name="settings_agreement">Пользовательское соглашение</string>
     <string name="share_app_link">https://practicum.yandex.ru/android-developer/</string>
+
+    <!-- Main Screen -->
+    <string name="menu_search">Поиск</string>
+    <string name="menu_playlists">Плейлисты</string>
+    <string name="menu_library">Избранное</string>
+    <string name="toast_playlists">Нажата кнопка "Плейлисты"</string>
+    <string name="toast_library">Нажата кнопка "Избранное"</string>
+
+    <!-- Search Screen -->
+    <string name="search_hint">Поиск</string>
+    <string name="cd_back">Назад</string>
+    <string name="cd_search_icon">Поиск</string>
+    <string name="cd_clear">Очистить</string>
 </resources>

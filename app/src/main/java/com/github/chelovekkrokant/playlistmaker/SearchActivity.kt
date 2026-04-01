@@ -1,8 +1,5 @@
 package com.github.chelovekkrokant.playlistmaker
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,18 +29,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-class SearchActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            SearchScreen(onBack = { finish() })
-        }
-    }
-}
 
 @Composable
 fun SearchScreen(onBack: () -> Unit) {
@@ -60,7 +49,6 @@ fun SearchScreen(onBack: () -> Unit) {
         )
     }
 }
-
 
 @Composable
 fun SearchHeader(onBack: () -> Unit) {
@@ -81,11 +69,11 @@ fun SearchHeader(onBack: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Назад",
+                contentDescription = stringResource(R.string.cd_back),
             )
         }
         Text(
-            text = "Поиск",
+            text = stringResource(R.string.menu_search),
             fontSize = 22.sp,
             color = Color.Black
         )
@@ -116,10 +104,9 @@ fun SearchTextField(
             ) {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Search",
+                    contentDescription = stringResource(R.string.cd_search_icon),
                     tint = Color(0xFFAEAFB4),
-                    modifier = Modifier
-                        .size(16.dp)
+                    modifier = Modifier.size(16.dp)
                 )
                 Box(
                     modifier = Modifier
@@ -129,7 +116,7 @@ fun SearchTextField(
                 ) {
                     if (value.isEmpty()) {
                         Text(
-                            text = "Поиск",
+                            text = stringResource(R.string.search_hint),
                             color = Color(0xFFAEAFB4),
                             fontSize = 16.sp
                         )
@@ -143,10 +130,9 @@ fun SearchTextField(
                     ) {
                         Icon(
                             Icons.Default.Clear,
-                            contentDescription = "Clear",
+                            contentDescription = stringResource(R.string.cd_clear),
                             tint = Color(0xFFAEAFB4),
-                            modifier = Modifier
-                                .size(16.dp)
+                            modifier = Modifier.size(16.dp)
                         )
                     }
                 }
@@ -154,7 +140,6 @@ fun SearchTextField(
         }
     )
 }
-
 
 @Preview(widthDp = 360, heightDp = 800, showBackground = true)
 @Composable
