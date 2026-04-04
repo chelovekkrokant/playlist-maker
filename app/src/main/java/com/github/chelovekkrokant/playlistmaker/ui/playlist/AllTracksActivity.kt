@@ -1,6 +1,10 @@
 package com.github.chelovekkrokant.playlistmaker.ui.playlist
 
+import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,13 +13,17 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,25 +37,24 @@ import com.github.chelovekkrokant.playlistmaker.ui.search.SearchState
 import com.github.chelovekkrokant.playlistmaker.ui.search.SearchViewModel
 
 class AllTracksActivity : ComponentActivity() {
-    private val viewModel by viewModels<AllTracksViewModel> {
-        AllTracksViewModel.getViewModelFactory()
+    private val viewModel by viewModels<SearchViewModel> {
+        SearchViewModel.getViewModelFactory()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            PlayerTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    AllTracksScreen(
-                        modifier = Modifier.padding(innerPadding),
-                        viewModel = viewModel
-                    )
-                }
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                AllTracksScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    viewModel = viewModel
+                )
             }
         }
     }
 }
+
 @Composable
 fun TrackListItem(track: Track) {
     Row(
@@ -91,15 +98,14 @@ fun AllTracksScreen(modifier: Modifier, viewModel: SearchViewModel) {
         }
 
         is SearchState.Success -> {
-            val screenState = null
             val tracks = (screenState as SearchState.Success).foundList
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(tracks.size) { index ->
-                    TrackListItem(track = tracks[index])
+                items(tracks) { track ->
+                    TrackListItem(track = track)
                     HorizontalDivider(thickness = 0.5.dp)
                 }
             }
@@ -114,7 +120,33 @@ fun AllTracksScreen(modifier: Modifier, viewModel: SearchViewModel) {
     }
 }
 
-@Preview(showBackground = true)
+@Composable
+fun TrackScreenContent(track: Track) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_music),
+            contentDescription = "Трек ${track.trackName}"
+        )
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 8.dp)
+        ) {
+            Text(track.trackName, fontWeight = FontWeight.Bold)
+            Text(
+                text = "${track.artistName} \u2022 ${track.trackTime}",
+                color = Color.Gray
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
 fun PreviewTrackListItem() {
     val track = Track(
@@ -125,7 +157,7 @@ fun PreviewTrackListItem() {
     TrackListItem(track)
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
 fun PreviewTrackScreenContent() {
     val track = Track(
