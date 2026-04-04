@@ -11,13 +11,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.github.chelovekkrokant.playlistmaker.R
 import com.github.chelovekkrokant.playlistmaker.domain.Track
 import com.github.chelovekkrokant.playlistmaker.ui.search.SearchState
@@ -58,27 +65,34 @@ class AllTracksActivity : ComponentActivity() {
 @Composable
 fun TrackListItem(track: Track) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_music),
-            contentDescription = "Трек ${track.trackName}"
+            contentDescription = "Трек ${track.trackName}",
+            modifier = Modifier.size(45.dp)
         )
-        Column(
-            modifier = Modifier.weight(1f),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(track.trackName, fontWeight = FontWeight.Bold)
-            Text(track.artistName)
+        Spacer(modifier = Modifier.width(8.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = track.trackName,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "${track.artistName} \u2022 ${track.trackTime}",
+                fontSize = 11.sp,
+                color = Color(0xFFAEAFB4)
+            )
         }
-        Column(
-            modifier = Modifier.weight(1f),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(track.trackTime)
-        }
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = Color(0xFFAEAFB4)
+        )
     }
 }
 
@@ -101,8 +115,8 @@ fun AllTracksScreen(modifier: Modifier, viewModel: SearchViewModel) {
             val tracks = (screenState as SearchState.Success).foundList
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                contentPadding = PaddingValues(vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(0.dp)
             ) {
                 items(tracks) { track ->
                     TrackListItem(track = track)
@@ -142,6 +156,29 @@ fun TrackScreenContent(track: Track) {
                 text = "${track.artistName} \u2022 ${track.trackTime}",
                 color = Color.Gray
             )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 800)
+@Composable
+fun PreviewAllTracksList() {
+    val tracks = listOf(
+        Track("Владивосток 2000", "Мумий Троль", "2:38"),
+        Track("Группа крови", "Кино", "4:43"),
+        Track("Не смотри назад", "Ария", "5:12"),
+        Track("Звезда по имени Солнце", "Кино", "3:45"),
+        Track("Лондон", "Аквариум", "4:32"),
+        Track("На заре", "Альянс", "3:50"),
+        Track("Перемен", "Кино", "4:56"),
+        Track("Розовый фламинго", "Сплин", "3:15"),
+        Track("Танцевать", "Мельница", "3:42"),
+        Track("Чёрный бумер", "Серега", "4:01"),
+    )
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(tracks) { track ->
+            TrackListItem(track = track)
+            HorizontalDivider(thickness = 0.5.dp)
         }
     }
 }
