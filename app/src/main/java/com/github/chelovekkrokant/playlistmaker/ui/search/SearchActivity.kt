@@ -1,4 +1,4 @@
-package com.github.chelovekkrokant.playlistmaker
+package com.github.chelovekkrokant.playlistmaker.ui.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.chelovekkrokant.playlistmaker.R
 
 @Composable
 fun SearchScreen(onBack: () -> Unit) {
