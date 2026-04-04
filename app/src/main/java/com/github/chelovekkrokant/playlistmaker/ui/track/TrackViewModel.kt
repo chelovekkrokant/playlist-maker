@@ -1,8 +1,9 @@
-package com.github.chelovekkrokant.playlistmaker
+package com.github.chelovekkrokant.playlistmaker.ui.track
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.github.chelovekkrokant.playlistmaker.creator.Creator
 import com.github.chelovekkrokant.playlistmaker.domain.api.TrackSearchInteractor
 
 class TrackViewModel(

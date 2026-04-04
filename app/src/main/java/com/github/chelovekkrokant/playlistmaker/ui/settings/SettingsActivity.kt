@@ -1,4 +1,4 @@
-package com.github.chelovekkrokant.playlistmaker
+package com.github.chelovekkrokant.playlistmaker.ui.settings
 
 import android.content.Intent
 import androidx.compose.foundation.clickable
@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import com.github.chelovekkrokant.playlistmaker.R
 
 @Composable
 fun SettingsScreen(onBack: () -> Unit) {

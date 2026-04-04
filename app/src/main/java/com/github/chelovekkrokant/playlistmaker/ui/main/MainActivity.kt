@@ -1,4 +1,4 @@
-package com.github.chelovekkrokant.playlistmaker
+package com.github.chelovekkrokant.playlistmaker.ui.main
 
 import android.os.Bundle
 import android.widget.Toast
@@ -37,6 +37,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
+import com.github.chelovekkrokant.playlistmaker.R
+import com.github.chelovekkrokant.playlistmaker.navigation.PlaylistHost
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

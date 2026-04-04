@@ -1,4 +1,4 @@
-package com.github.chelovekkrokant.playlistmaker
+package com.github.chelovekkrokant.playlistmaker.ui.track
 
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
