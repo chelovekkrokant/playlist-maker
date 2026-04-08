@@ -1,9 +1,10 @@
+package com.github.chelovekkrokant.playlistmaker.ui.search
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.github.chelovekkrokant.playlistmaker.creator.Creator
 import com.github.chelovekkrokant.playlistmaker.domain.api.TrackRepository
-import com.github.chelovekkrokant.playlistmaker.ui.search.SearchState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
