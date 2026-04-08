@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.chelovekkrokant.playlistmaker.R
@@ -135,10 +136,16 @@ fun SearchScreen(
 
             is SearchState.Success -> {
                 val tracks = (screenState as SearchState.Success).foundList
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(tracks) { track ->
-                        TrackListItem(track = track)
-                        HorizontalDivider(thickness = 0.5.dp)
+                if (tracks.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("По вашему запросу треков не найдено")
+                    }
+                } else {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        items(tracks) { track ->
+                            TrackListItem(track = track)
+                            HorizontalDivider(thickness = 0.5.dp)
+                        }
                     }
                 }
             }
@@ -218,4 +225,83 @@ fun SearchTextField(
             }
         }
     )
+}
+
+@Preview(showBackground = true, widthDp = 360)
+@Composable
+fun TrackListItemPreview() {
+    TrackListItem(Track("Группа крови", "Кино", "04:43"))
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 800)
+@Composable
+fun SearchResultsPreview() {
+    val tracks = listOf(
+        Track("Группа крови", "Кино", "04:43"),
+        Track("Звезда по имени Солнце", "Кино", "03:45"),
+        Track("Перемен", "Кино", "04:56"),
+    )
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(tracks) { track ->
+            TrackListItem(track = track)
+            HorizontalDivider(thickness = 0.5.dp)
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360)
+@Composable
+fun SearchTextFieldPreview() {
+    SearchTextField(value = "Кино", onValueChange = {}, onClear = {})
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 800)
+@Composable
+fun SearchScreenFullPreview() {
+    val tracks = listOf(
+        Track("Группа крови", "Кино", "04:43"),
+        Track("Звезда по имени Солнце", "Кино", "03:45"),
+        Track("Перемен", "Кино", "04:56"),
+    )
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Header
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(
+                onClick = {},
+                modifier = Modifier.size(48.dp),
+                contentPadding = PaddingValues(0.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = Color.Black
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Назад"
+                )
+            }
+            Text(text = "Поиск", fontSize = 22.sp)
+        }
+
+        // Search TextField
+        SearchTextField(
+            value = "Кино",
+            onValueChange = {},
+            onClear = {}
+        )
+
+        // Results
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(tracks) { track ->
+                TrackListItem(track = track)
+                HorizontalDivider(thickness = 0.5.dp)
+            }
+        }
+    }
 }
