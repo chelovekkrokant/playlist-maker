@@ -53,10 +53,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(
     onSearchClick: () -> Unit,
-    onSettingsClick: () -> Unit,
-    onPlaylistsClick: () -> Unit
+    onSettingsClick: () -> Unit
 ) {
     val context = LocalContext.current
+    val toastPlaylists = stringResource(R.string.toast_playlists)
     val toastLibrary = stringResource(R.string.toast_library)
 
     Column(
@@ -92,7 +92,9 @@ fun MainScreen(
             MenuItem(
                 icon = Icons.AutoMirrored.Filled.List,
                 title = stringResource(R.string.menu_playlists),
-                onClick = onPlaylistsClick
+                onClick = {
+                    Toast.makeText(context, toastPlaylists, Toast.LENGTH_SHORT).show()
+                }
             )
             MenuItem(
                 icon = Icons.Default.FavoriteBorder,
@@ -113,7 +115,7 @@ fun MainScreen(
 @Preview(widthDp = 360, heightDp = 800, showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    MainScreen(onSearchClick = {}, onSettingsClick = {}, onPlaylistsClick = {})
+    MainScreen(onSearchClick = {}, onSettingsClick = {})
 }
 
 @Composable

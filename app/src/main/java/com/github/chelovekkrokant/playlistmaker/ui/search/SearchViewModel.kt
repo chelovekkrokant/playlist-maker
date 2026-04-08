@@ -1,10 +1,9 @@
-package com.github.chelovekkrokant.playlistmaker.ui.search
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.github.chelovekkrokant.playlistmaker.creator.Creator
 import com.github.chelovekkrokant.playlistmaker.domain.api.TrackRepository
+import com.github.chelovekkrokant.playlistmaker.ui.search.SearchState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,21 +12,19 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 class SearchViewModel(
-    private val TrackRepository: TrackRepository,
+    private val tracksRepository: TrackRepository
 ) : ViewModel() {
+    private val _searchScreenState = MutableStateFlow<SearchState>(SearchState.Initial)
+    val searchScreenState  = _searchScreenState.asStateFlow()
 
-    //...
-    private val _allTracksScreenState = MutableStateFlow<SearchState>(SearchState.Loading)
-    val allTracksScreenState = _allTracksScreenState.asStateFlow()
-
-    fun fetchData(){
+    fun search(whatSearch: String){
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _allTracksScreenState.update { SearchState.Loading }
-                val list = TrackRepository.getAllTracks()
-                _allTracksScreenState.update { SearchState.Success(foundList = list) }
+                _searchScreenState.update { SearchState.Searching }
+                val list = tracksRepository.searchTracks(expression = whatSearch)
+                _searchScreenState.update { SearchState.Success(foundList = list) }
             } catch (e: IOException){
-                _allTracksScreenState.update { SearchState.Error(e.message.toString()) }
+                _searchScreenState.update { SearchState.Fail(e.message.toString()) }
             }
         }
     }

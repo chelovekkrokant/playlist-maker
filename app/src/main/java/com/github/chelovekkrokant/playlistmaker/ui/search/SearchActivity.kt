@@ -1,6 +1,10 @@
 package com.github.chelovekkrokant.playlistmaker.ui.search
 
+import SearchViewModel
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -18,66 +23,118 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.chelovekkrokant.playlistmaker.R
-
+import com.github.chelovekkrokant.playlistmaker.data.network.Track
 @Composable
-fun SearchScreen(onBack: () -> Unit) {
-    var searchValue by rememberSaveable { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier.fillMaxSize()
+fun TrackListItem(track: Track) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        SearchHeader(onBack)
-        SearchTextField(
-            value = searchValue,
-            onValueChange = { searchValue = it },
-            onClear = { searchValue = "" }
+        Image(
+            painter = painterResource(id = R.drawable.ic_music),
+            contentDescription = "Трек ${track.trackName}"
         )
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(track.trackName, fontWeight = FontWeight.Bold)
+            Text(track.artistName)
+        }
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(track.trackTime)
+        }
     }
 }
-
 @Composable
-fun SearchHeader(onBack: () -> Unit) {
-    Row(
+fun SearchScreen(
+    modifier: Modifier,
+    viewModel: SearchViewModel
+) {
+    val screenState by viewModel.searchScreenState.collectAsState()
+    var text by remember { mutableStateOf("") }
+    Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(top = 48.dp, start = 16.dp, end = 16.dp)
+            .fillMaxWidth(),
     ) {
-        Button(
-            onClick = onBack,
-            modifier = Modifier.size(48.dp),
-            contentPadding = PaddingValues(0.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent,
-                contentColor = Color.Black
-            )
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.cd_back),
-            )
-        }
-        Text(
-            text = stringResource(R.string.menu_search),
-            fontSize = 22.sp,
-            color = Color.Black
+        OutlinedTextField(
+            value = text,
+            onValueChange = {
+                text = it
+            },
+            leadingIcon = {
+                Icon(
+                    modifier = Modifier.clickable {
+                        viewModel.search(text)
+                    },
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = "Search Icon"
+                )
+            },
+            modifier = Modifier.fillMaxWidth()
         )
+
+        when (screenState) {
+            is SearchState.Initial -> {
+                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Введите строку для поиска")
+                }
+            }
+
+            is SearchState.Searching -> {
+                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            is SearchState.Success -> {
+                val tracks = (screenState as SearchState.Success).foundList
+                LazyColumn(
+                    modifier = modifier.fillMaxSize()
+                ) {
+                    items(tracks.size) { index ->
+                        TrackListItem(track = tracks[index])
+                        HorizontalDivider(thickness = 0.5.dp)
+                    }
+                }
+            }
+
+            is SearchState.Fail -> {
+                val error = (screenState as SearchState.Fail).error
+                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Ошибка: $error", color = Color.Red)
+                }
+            }
+        }
     }
 }
 
@@ -142,8 +199,3 @@ fun SearchTextField(
     )
 }
 
-@Preview(widthDp = 360, heightDp = 800, showBackground = true)
-@Composable
-fun SearchScreenPreview() {
-    SearchScreen(onBack = {})
-}
