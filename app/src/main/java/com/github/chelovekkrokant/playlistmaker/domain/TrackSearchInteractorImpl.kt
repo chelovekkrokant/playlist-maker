@@ -5,7 +5,7 @@ import com.github.chelovekkrokant.playlistmaker.domain.api.TrackSearchInteractor
 
 class TrackSearchInteractorImpl(private val repository: TrackRepository) : TrackSearchInteractor {
 
-    override fun searchTracks(expression: String): List<Track> {
+    override suspend fun searchTracks(expression: String): List<Track> {
         return repository.searchTracks(expression)
     }
     override suspend fun getAllTracks(): List<Track> {
