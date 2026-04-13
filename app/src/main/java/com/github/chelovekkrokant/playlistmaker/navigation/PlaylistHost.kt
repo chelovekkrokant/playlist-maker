@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.github.chelovekkrokant.playlistmaker.ui.main.MainScreen
+import com.github.chelovekkrokant.playlistmaker.ui.playlist.PlaylistScreen
 import com.github.chelovekkrokant.playlistmaker.ui.search.SearchScreen
 import com.github.chelovekkrokant.playlistmaker.ui.search.SearchViewModel
 import com.github.chelovekkrokant.playlistmaker.ui.settings.SettingsScreen
@@ -21,6 +22,7 @@ fun PlaylistHost(navController: NavHostController) {
             MainScreen(
                 onSearchClick = { navController.navigate(Screen.Search.name) },
                 onSettingsClick = { navController.navigate(Screen.Settings.name) },
+                onPlaylistsClick = { navController.navigate(Screen.Playlist.name) }
             )
         }
         composable(Screen.Search.name) {
@@ -33,6 +35,9 @@ fun PlaylistHost(navController: NavHostController) {
         }
         composable(Screen.Settings.name) {
             SettingsScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Screen.Playlist.name) {
+            PlaylistScreen()
         }
     }
 }
