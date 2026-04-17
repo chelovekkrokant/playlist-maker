@@ -3,7 +3,7 @@ package com.github.chelovekkrokant.playlistmaker.data.db
 import com.github.chelovekkrokant.playlistmaker.domain.api.SearchHistoryRepository
 import kotlinx.coroutines.CoroutineScope
 
-class SearchHistoryRepositoryImpl(private val scope: CoroutineScope): SearchHistoryRepository {
+class SearchHistoryRepositoryImpl(private val scope: CoroutineScope) : SearchHistoryRepository {
     private val database = DatabaseMock(scope = scope)
 
     override fun getHistoryRequests(): List<String> {

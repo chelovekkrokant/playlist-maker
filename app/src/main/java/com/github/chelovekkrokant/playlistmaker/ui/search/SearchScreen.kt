@@ -256,7 +256,7 @@ fun SearchScreen(
                 HistoryRequests(
                     historyList = historyList,
                     onClick = { word ->
-                        text = word.word
+                        text = word
                     }
                 )
             }

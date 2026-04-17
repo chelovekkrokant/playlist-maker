@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.github.chelovekkrokant.playlistmaker.creator.Creator
 import com.github.chelovekkrokant.playlistmaker.data.db.SearchHistoryRepositoryImpl
 import com.github.chelovekkrokant.playlistmaker.data.network.TrackRepositoryImpl
-import com.github.chelovekkrokant.playlistmaker.domain.Word
 import com.github.chelovekkrokant.playlistmaker.domain.api.TrackRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,7 +45,7 @@ class SearchViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _searchScreenState.update { SearchState.Searching }
-                searchHistoryRepository.addToHistory(Word(word = request))
+                searchHistoryRepository.addToHistory(request)
                 val list = trackRepository.searchTracks(expression = request)
                 _searchScreenState.update { SearchState.Success(foundList = list) }
             } catch (e: IOException) {
@@ -59,7 +58,7 @@ class SearchViewModel(
         _searchScreenState.update { SearchState.Initial }
     }
 
-    suspend fun getHistoryList() = searchHistoryRepository.getHistory()
+    suspend fun getHistoryList() = searchHistoryRepository.getHistoryRequests()
 
 }
 
