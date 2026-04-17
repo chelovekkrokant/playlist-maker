@@ -10,12 +10,28 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
+private fun millisToTime(ms: Long): String {
+    val s = ms / 1000; val m = s / 60
+    return "%02d:%02d".format(m, s - m * 60)
+}
+
 class DatabaseMock(val scope: CoroutineScope) {
 
     private val historyList = mutableListOf<String>()
     private val _historyUpdates = MutableSharedFlow<Unit>()
     private val playlists = mutableListOf<Playlist>()
-    private val tracks = mutableListOf<Track>()
+    private val tracks = mutableListOf<Track>(
+        Track(1, "Владивосток 2000", "Мумий Троль", millisToTime(158000), "", false, 0),
+        Track(2, "Группа крови", "Кино", millisToTime(283000), "", false, 0),
+        Track(3, "Не смотри назад", "Ария", millisToTime(312000), "", false, 0),
+        Track(4, "Звезда по имени Солнце", "Кино", millisToTime(225000), "", false, 0),
+        Track(5, "Лондон", "Аквариум", millisToTime(272000), "", false, 0),
+        Track(6, "На заре", "Альянс", millisToTime(230000), "", false, 0),
+        Track(7, "Перемен", "Кино", millisToTime(296000), "", false, 0),
+        Track(8, "Розовый фламинго", "Сплин", millisToTime(195000), "", false, 0),
+        Track(9, "Танцевать", "Мельница", millisToTime(222000), "", false, 0),
+        Track(10, "Чёрный бумер", "Серега", millisToTime(241000), "", false, 0),
+    )
 
     fun getHistoryRequests(): List<String> {
         return historyList.toList()
@@ -89,6 +105,9 @@ class DatabaseMock(val scope: CoroutineScope) {
     }
 
     fun searchTracks(expression: String): List<Track> {
-        return tracks.filter { it.trackName.contains(expression, true) }
+        return tracks.filter {
+            it.trackName.contains(expression, ignoreCase = true) ||
+            it.artistName.contains(expression, ignoreCase = true)
+        }
     }
 }

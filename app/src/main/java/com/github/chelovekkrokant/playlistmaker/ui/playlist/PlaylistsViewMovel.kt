@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 class PlaylistsViewModel() : ViewModel() {
+    var selectedTrack: Track? = null
     private val playlistsRepository: PlaylistsRepository =
         PlaylistsRepositoryImpl(scope = viewModelScope)
     private val tracksRepository: TracksRepository = TracksRepositoryImpl(scope = viewModelScope)

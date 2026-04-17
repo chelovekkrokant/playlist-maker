@@ -1,7 +1,6 @@
 package com.github.chelovekkrokant.playlistmaker.ui.main
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -30,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,11 +52,9 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onPlaylistsClick: () -> Unit
+    onPlaylistsClick: () -> Unit,
+    onFavoritesClick: () -> Unit
 ) {
-    val context = LocalContext.current
-    val toastLibrary = stringResource(R.string.toast_library)
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -97,9 +93,7 @@ fun MainScreen(
             MenuItem(
                 icon = Icons.Default.FavoriteBorder,
                 title = stringResource(R.string.menu_library),
-                onClick = {
-                    Toast.makeText(context, toastLibrary, Toast.LENGTH_SHORT).show()
-                }
+                onClick = onFavoritesClick
             )
             MenuItem(
                 icon = Icons.Default.Settings,
@@ -113,7 +107,7 @@ fun MainScreen(
 @Preview(widthDp = 360, heightDp = 800, showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    MainScreen(onSearchClick = {}, onSettingsClick = {}, onPlaylistsClick = {})
+    MainScreen(onSearchClick = {}, onSettingsClick = {}, onPlaylistsClick = {}, onFavoritesClick = {})
 }
 
 @Composable

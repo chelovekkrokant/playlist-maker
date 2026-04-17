@@ -1,7 +1,6 @@
 package com.github.chelovekkrokant.playlistmaker.ui.playlist
 
 import androidx.compose.foundation.background
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -81,6 +80,7 @@ fun OutlinedInputField(
 @Composable
 fun NewPlaylistScreen(
     modifier: Modifier = Modifier,
+    playlistsViewModel: PlaylistsViewModel,
     onBack: () -> Unit
 ) {
     var name by remember { mutableStateOf("") }
@@ -147,7 +147,13 @@ fun NewPlaylistScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp)
-                    .background(ButtonColor, RoundedCornerShape(26.dp)),
+                    .background(ButtonColor, RoundedCornerShape(26.dp))
+                    .clickable {
+                        if (name.isNotBlank()) {
+                            playlistsViewModel.createNewPlayList(name, description)
+                            onBack()
+                        }
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -162,13 +168,3 @@ fun NewPlaylistScreen(
     }
 }
 
-@Preview(
-    name = "New Playlist",
-    widthDp = 360,
-    heightDp = 800,
-    showBackground = true
-)
-@Composable
-private fun NewPlaylistScreenPreview() {
-    NewPlaylistScreen(onBack = {})
-}
