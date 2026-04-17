@@ -1,17 +1,17 @@
 package com.github.chelovekkrokant.playlistmaker.creator
 
-import com.github.chelovekkrokant.playlistmaker.data.network.RetrofitNetworkClient
-import com.github.chelovekkrokant.playlistmaker.data.network.TrackRepositoryImpl
+import com.github.chelovekkrokant.playlistmaker.data.network.TracksRepositoryImpl
 import com.github.chelovekkrokant.playlistmaker.domain.TrackSearchInteractorImpl
-import com.github.chelovekkrokant.playlistmaker.domain.api.TrackRepository
 import com.github.chelovekkrokant.playlistmaker.domain.api.TrackSearchInteractor
+import com.github.chelovekkrokant.playlistmaker.domain.api.TracksRepository
+import kotlinx.coroutines.CoroutineScope
 
 object Creator {
-    fun getTrackRepository(): TrackRepository {
-        return TrackRepositoryImpl(RetrofitNetworkClient(), Storage())
+    fun getTrackRepository(scope: CoroutineScope): TracksRepository {
+        return TracksRepositoryImpl(scope)
     }
 
-    fun provideTrackSearchInteractor(): TrackSearchInteractor {
-        return TrackSearchInteractorImpl(getTrackRepository())
+    fun provideTrackSearchInteractor(scope: CoroutineScope): TrackSearchInteractor {
+        return TrackSearchInteractorImpl(getTrackRepository(scope))
     }
 }

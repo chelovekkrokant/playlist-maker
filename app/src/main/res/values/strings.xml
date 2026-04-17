@@ -24,4 +24,19 @@
     <string name="cd_back">Назад</string>
     <string name="cd_search_icon">Поиск</string>
     <string name="cd_clear">Очистить</string>
+    <string name="search_icon">Поиск</string>
+    <string name="songs">Песни</string>
+    <string name="search_songs_placeholder">Искать песни</string>
+    <string name="clear_search">Очистить поиск</string>
+    <string name="search_placeholder">Введите строку для поиска</string>
+    <string name="no_songs_found">По вашему запросу треков не найдено</string>
+    <string name="error">Ошибка</string>
+
+    <!-- New Playlist Screen -->
+    <string name="new_playlist_title">Новый плейлист</string>
+    <string name="new_playlist_name_hint">Название*</string>
+    <string name="new_playlist_description_hint">Описание</string>
+    <string name="new_playlist_create">Создать</string>
+    <string name="add_playlist">Добавить плейлист</string>
+    <string name="tracks_count">%d треков</string>
 </resources>
