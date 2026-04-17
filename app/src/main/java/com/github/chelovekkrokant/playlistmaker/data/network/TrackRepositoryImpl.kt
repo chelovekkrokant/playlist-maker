@@ -1,14 +1,12 @@
 package com.github.chelovekkrokant.playlistmaker.data.network
 
 import com.github.chelovekkrokant.playlistmaker.creator.Storage
-import com.github.chelovekkrokant.playlistmaker.data.NetworkClient
 import com.github.chelovekkrokant.playlistmaker.data.dto.TrackDto
 import com.github.chelovekkrokant.playlistmaker.domain.Track
 import com.github.chelovekkrokant.playlistmaker.domain.api.TrackRepository
 import kotlinx.coroutines.delay
 
 class TrackRepositoryImpl(
-    private val networkClient: NetworkClient,
     private val storage: Storage
 ) : TrackRepository {
 
