@@ -39,9 +39,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.chelovekkrokant.playlistmaker.R
+import com.github.chelovekkrokant.playlistmaker.domain.Playlist
 import com.github.chelovekkrokant.playlistmaker.domain.Track
 import kotlinx.coroutines.launch
 
@@ -55,10 +57,45 @@ fun TrackDetailsScreen(
     val playlists by playlistsViewModel.playlists.collectAsState(emptyList())
     var isFavorite by remember { mutableStateOf(track.favorite) }
     var showSheet by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
+    TrackDetailsLayout(
+        track = track,
+        playlists = playlists,
+        isFavorite = isFavorite,
+        showSheet = showSheet,
+        onFavoriteToggle = {
+            isFavorite = !isFavorite
+            scope.launch { playlistsViewModel.toggleFavorite(track, isFavorite) }
+            Toast.makeText(context, "isFavorite = $isFavorite", Toast.LENGTH_SHORT).show()
+        },
+        onAddToPlaylistClick = { showSheet = true },
+        onDismissSheet = { showSheet = false },
+        onPlaylistSelected = { playlist ->
+            scope.launch {
+                playlistsViewModel.insertTrackToPlaylist(track, playlist.id)
+                Toast.makeText(context, "песня с id ${track.id} в плейлисте ${playlist.id}", Toast.LENGTH_SHORT).show()
+                showSheet = false
+            }
+        },
+        navigateBack = navigateBack
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TrackDetailsLayout(
+    track: Track,
+    playlists: List<Playlist>,
+    isFavorite: Boolean,
+    showSheet: Boolean,
+    onFavoriteToggle: () -> Unit,
+    onAddToPlaylistClick: () -> Unit,
+    onDismissSheet: () -> Unit,
+    onPlaylistSelected: (Playlist) -> Unit,
+    navigateBack: () -> Unit
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
@@ -97,21 +134,13 @@ fun TrackDetailsScreen(
                     imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Избранное",
                     tint = if (isFavorite) Color.Red else Color.Gray,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clickable {
-                            isFavorite = !isFavorite
-                            scope.launch { playlistsViewModel.toggleFavorite(track, isFavorite) }
-                            Toast.makeText(context, "isFavorite = $isFavorite", Toast.LENGTH_SHORT).show()
-                        }
+                    modifier = Modifier.size(40.dp).clickable { onFavoriteToggle() }
                 )
                 Icon(
                     imageVector = Icons.Default.PlaylistAdd,
                     contentDescription = "Добавить в плейлист",
                     tint = Color.Gray,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clickable { showSheet = true }
+                    modifier = Modifier.size(40.dp).clickable { onAddToPlaylistClick() }
                 )
             }
         }
@@ -119,8 +148,8 @@ fun TrackDetailsScreen(
 
     if (showSheet) {
         ModalBottomSheet(
-            onDismissRequest = { showSheet = false },
-            sheetState = sheetState
+            onDismissRequest = onDismissSheet,
+            sheetState = rememberModalBottomSheetState()
         ) {
             Text(
                 text = "Выберите плейлист",
@@ -131,15 +160,49 @@ fun TrackDetailsScreen(
             LazyColumn {
                 items(playlists.size) { index ->
                     PlaylistListItem(playlist = playlists[index]) {
-                        scope.launch {
-                            playlistsViewModel.insertTrackToPlaylist(track, playlists[index].id)
-                            Toast.makeText(context, "песня с id ${track.id} в плейлисте ${playlists[index].id}", Toast.LENGTH_SHORT).show()
-                            showSheet = false
-                        }
+                        onPlaylistSelected(playlists[index])
                     }
                     HorizontalDivider(thickness = 0.5.dp)
                 }
             }
         }
     }
+}
+
+private val previewTrack = Track(2, "Группа крови", "Кино", "04:43", "", false, 0)
+private val previewPlaylists = listOf(
+    Playlist(1, "Любимые треки", "", List(3) { Track(it.toLong() + 1, "", "", "", "", false, 1) }),
+    Playlist(2, "Рок классика", "", List(5) { Track(it.toLong() + 4, "", "", "", "", false, 2) }),
+)
+
+@Preview(name = "TrackDetails", widthDp = 360, heightDp = 800, showBackground = true)
+@Composable
+private fun TrackDetailsPreview() {
+    TrackDetailsLayout(
+        track = previewTrack,
+        playlists = emptyList(),
+        isFavorite = false,
+        showSheet = false,
+        onFavoriteToggle = {},
+        onAddToPlaylistClick = {},
+        onDismissSheet = {},
+        onPlaylistSelected = {},
+        navigateBack = {}
+    )
+}
+
+@Preview(name = "AddToPlaylistSheet", widthDp = 360, heightDp = 800, showBackground = true)
+@Composable
+private fun AddToPlaylistSheetPreview() {
+    TrackDetailsLayout(
+        track = previewTrack,
+        playlists = previewPlaylists,
+        isFavorite = false,
+        showSheet = true,
+        onFavoriteToggle = {},
+        onAddToPlaylistClick = {},
+        onDismissSheet = {},
+        onPlaylistSelected = {},
+        navigateBack = {}
+    )
 }

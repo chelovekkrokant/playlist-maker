@@ -48,6 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.chelovekkrokant.playlistmaker.R
@@ -55,7 +56,7 @@ import com.github.chelovekkrokant.playlistmaker.domain.Track
 
 private val SearchBarBackground = Color(0xFFE6E8EB)
 private val SubtitleColor = Color(0xFFAEAFB4)
-private val ScreenBackground = Color(0xFFF2F2F7)
+private val ScreenBackground = Color(0xFFFFFFFF)
 
 @Composable
 fun TrackListItem(
@@ -122,13 +123,10 @@ fun HistoryRequests(
                     imageVector = Icons.Filled.History,
                     contentDescription = null,
                     tint = SubtitleColor,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(12.dp))
-                Text(text = item, fontSize = 14.sp)
-            }
-            if (index != historyList.lastIndex) {
-                HorizontalDivider(color = SubtitleColor.copy(alpha = 0.3f))
+                Text(text = item, fontSize = 16.sp)
             }
         }
     }
@@ -302,6 +300,58 @@ fun SearchScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+@Preview(name = "SearchScreen — история", widthDp = 360, heightDp = 800, showBackground = true)
+@Composable
+private fun SearchScreenHistoryPreview() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(ScreenBackground)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = null
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text("Поиск", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .background(SearchBarBackground, RoundedCornerShape(12.dp))
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(44.dp)
+                    .padding(horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = null,
+                    tint = SubtitleColor,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Поиск", color = SubtitleColor, fontSize = 16.sp)
+            }
+            HistoryRequests(
+                historyList = listOf("Кино", "Мумий Троль", "Ария"),
+                onClick = {}
+            )
         }
     }
 }

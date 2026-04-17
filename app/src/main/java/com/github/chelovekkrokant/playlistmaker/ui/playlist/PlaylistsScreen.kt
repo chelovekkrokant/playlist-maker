@@ -29,10 +29,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.chelovekkrokant.playlistmaker.R
 import com.github.chelovekkrokant.playlistmaker.domain.Playlist
+import com.github.chelovekkrokant.playlistmaker.domain.Track
 
 @Composable
 fun PlaylistListItem(playlist: Playlist, onClick: () -> Unit) {
@@ -69,7 +71,23 @@ fun PlaylistsScreen(
     navigateBack: () -> Unit
 ) {
     val playlists by playlistsViewModel.playlists.collectAsState(emptyList())
+    PlaylistsLayout(
+        modifier = modifier,
+        playlists = playlists,
+        addNewPlaylist = addNewPlaylist,
+        navigateToPlaylist = navigateToPlaylist,
+        navigateBack = navigateBack
+    )
+}
 
+@Composable
+private fun PlaylistsLayout(
+    modifier: Modifier,
+    playlists: List<Playlist>,
+    addNewPlaylist: () -> Unit,
+    navigateToPlaylist: (Long) -> Unit,
+    navigateBack: () -> Unit
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -89,7 +107,7 @@ fun PlaylistsScreen(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.search_icon)
                 )
-                Text("Playlists", fontSize = 32.sp)
+                Text("Плейлисты", fontSize = 32.sp)
             }
 
             Column(
@@ -100,7 +118,7 @@ fun PlaylistsScreen(
                 LazyColumn(modifier = modifier.fillMaxSize()) {
                     items(playlists.size) { index ->
                         PlaylistListItem(playlist = playlists[index]) {
-                            navigateToPlaylist(index.toLong())
+                            navigateToPlaylist(playlists[index].id)
                         }
                         HorizontalDivider(thickness = 0.5.dp)
                     }
@@ -124,3 +142,20 @@ fun PlaylistsScreen(
     }
 }
 
+private val previewPlaylists = listOf(
+    Playlist(1, "Любимые треки", "", List(3) { Track(it.toLong() + 1, "", "", "", "", false, 1) }),
+    Playlist(2, "Рок классика", "", List(5) { Track(it.toLong() + 4, "", "", "", "", false, 2) }),
+    Playlist(3, "Утренний", "", List(2) { Track(it.toLong() + 9, "", "", "", "", false, 3) }),
+)
+
+@Preview(name = "PlaylistsScreen", widthDp = 360, heightDp = 800, showBackground = true)
+@Composable
+private fun PlaylistsScreenPreview() {
+    PlaylistsLayout(
+        modifier = Modifier,
+        playlists = previewPlaylists,
+        addNewPlaylist = {},
+        navigateToPlaylist = {},
+        navigateBack = {}
+    )
+}
