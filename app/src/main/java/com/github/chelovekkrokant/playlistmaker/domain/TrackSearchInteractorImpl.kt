@@ -1,6 +1,5 @@
 package com.github.chelovekkrokant.playlistmaker.domain
 
-import com.github.chelovekkrokant.playlistmaker.data.network.Track
 import com.github.chelovekkrokant.playlistmaker.domain.api.TrackRepository
 import com.github.chelovekkrokant.playlistmaker.domain.api.TrackSearchInteractor
 

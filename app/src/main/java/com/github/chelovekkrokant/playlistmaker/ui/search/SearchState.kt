@@ -1,6 +1,6 @@
 package com.github.chelovekkrokant.playlistmaker.ui.search
 
-import com.github.chelovekkrokant.playlistmaker.data.network.Track
+import com.github.chelovekkrokant.playlistmaker.domain.Track
 
 sealed class SearchState {
     object Initial: SearchState() // Первоначальное cостояние экрана

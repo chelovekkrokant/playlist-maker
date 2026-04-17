@@ -1,4 +1,4 @@
-package com.github.chelovekkrokant.playlistmaker.data.network
+package com.github.chelovekkrokant.playlistmaker.domain
 
 data class Track(
     val id: Long,
