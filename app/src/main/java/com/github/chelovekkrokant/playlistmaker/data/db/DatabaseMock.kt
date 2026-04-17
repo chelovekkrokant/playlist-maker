@@ -49,7 +49,7 @@ class DatabaseMock(val scope: CoroutineScope) {
     }
 
     fun getAllPlaylists(): Flow<List<Playlist>> = flow {
-        delay(500) // Имитируем задержку загрузки из базы данных
+        delay(500)
         val filteredPlaylists = mutableListOf<Playlist>()
         playlists.forEach { playlist ->
             val playlistTracks = tracks.filter { track ->
@@ -57,7 +57,6 @@ class DatabaseMock(val scope: CoroutineScope) {
             }
             filteredPlaylists.add(playlist.copy(tracks = playlistTracks))
         }
-
         emit(filteredPlaylists.toList())
         delay(100)
     }
@@ -81,10 +80,6 @@ class DatabaseMock(val scope: CoroutineScope) {
         playlists.removeIf { it.id == playlistId }
     }
 
-    fun deleteTrackFromPlaylist(trackId: Long) {
-        tracks.removeIf { it.id == trackId }
-    }
-
     fun getTrackByNameAndArtist(track: Track): Flow<Track?> = flow {
         emit(tracks.find { it.trackName == track.trackName && it.artistName == track.artistName })
     }
@@ -95,7 +90,7 @@ class DatabaseMock(val scope: CoroutineScope) {
     }
 
     fun getFavoriteTracks(): Flow<List<Track>> = flow {
-        delay(300) // Имитируем задержку
+        delay(300)
         val favorites = tracks.filter { it.favorite }
         emit(favorites)
     }

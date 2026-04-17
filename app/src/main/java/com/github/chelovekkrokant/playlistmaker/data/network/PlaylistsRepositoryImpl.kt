@@ -9,9 +9,7 @@ import kotlinx.coroutines.flow.Flow
 class PlaylistsRepositoryImpl(
     private val scope: CoroutineScope
 ) : PlaylistsRepository {
-    private val database = DatabaseMock(
-        scope = scope,
-    )
+    private val database = DatabaseMock(scope = scope)
 
     override fun getPlaylist(playlistId: Long): Flow<Playlist?> {
         return database.getPlaylist(playlistId)
