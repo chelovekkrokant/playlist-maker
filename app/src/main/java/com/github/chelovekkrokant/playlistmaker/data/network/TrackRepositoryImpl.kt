@@ -17,6 +17,7 @@ class TrackRepositoryImpl(
     }
 
     override suspend fun getAllTracks(): List<Track> {
+        delay(1000) // Эммулируем задержку ответа
         return storage.search("").map { it.toTrack() }
     }
 
@@ -24,6 +25,14 @@ class TrackRepositoryImpl(
         val seconds = trackTimeMillis / 1000
         val minutes = seconds / 60
         val trackTime = "%02d".format(minutes) + ":" + "%02d".format(seconds - minutes * 60)
-        return Track(trackName, artistName, trackTime)
+        return Track(
+            id = id,
+            trackName = trackName,
+            artistName = artistName,
+            trackTime = trackTime,
+            image = "",
+            favorite = false,
+            playlistId = 0L
+        )
     }
 }
