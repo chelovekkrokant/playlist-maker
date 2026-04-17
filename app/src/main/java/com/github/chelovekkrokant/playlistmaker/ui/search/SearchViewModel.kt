@@ -60,6 +60,15 @@ class SearchViewModel(
 
     suspend fun getHistoryList() = searchHistoryRepository.getHistoryRequests()
 
+    companion object {
+        fun getViewModelFactory(): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return SearchViewModel(Creator.getTrackRepository()) as T
+                }
+            }
+    }
 }
 
 class SearchViewModelUnrelevant(

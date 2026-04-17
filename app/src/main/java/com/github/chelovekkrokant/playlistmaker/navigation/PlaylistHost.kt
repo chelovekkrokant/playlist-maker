@@ -29,8 +29,10 @@ fun PlaylistHost(navController: NavHostController) {
             val searchViewModel: SearchViewModel = viewModel(factory = SearchViewModel.getViewModelFactory())
             SearchScreen(
                 modifier = Modifier,
-                viewModel = searchViewModel,
-                onBack = { navController.popBackStack() }
+                searchViewModel = searchViewModel,
+                onClick = { index ->
+                    if (index == null) navController.popBackStack()
+                }
             )
         }
         composable(Screen.Settings.name) {
