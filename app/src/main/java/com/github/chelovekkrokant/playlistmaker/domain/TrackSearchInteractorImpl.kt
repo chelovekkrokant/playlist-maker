@@ -1,9 +1,9 @@
 package com.github.chelovekkrokant.playlistmaker.domain
 
-import com.github.chelovekkrokant.playlistmaker.domain.api.TrackRepository
+import com.github.chelovekkrokant.playlistmaker.domain.api.TracksRepository
 import com.github.chelovekkrokant.playlistmaker.domain.api.TrackSearchInteractor
 
-class TrackSearchInteractorImpl(private val repository: TrackRepository) : TrackSearchInteractor {
+class TrackSearchInteractorImpl(private val repository: TracksRepository) : TrackSearchInteractor {
 
     override suspend fun searchTracks(expression: String): List<Track> {
         return repository.searchTracks(expression)

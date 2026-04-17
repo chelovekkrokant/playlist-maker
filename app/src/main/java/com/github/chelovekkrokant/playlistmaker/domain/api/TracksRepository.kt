@@ -3,7 +3,7 @@ package com.github.chelovekkrokant.playlistmaker.domain.api
 import com.github.chelovekkrokant.playlistmaker.domain.Track
 import kotlinx.coroutines.flow.Flow
 
-interface TrackRepository {
+interface TracksRepository {
     suspend fun searchTracks(expression: String): List<Track>
     //suspend fun getAllTracks(): List<Track>
 

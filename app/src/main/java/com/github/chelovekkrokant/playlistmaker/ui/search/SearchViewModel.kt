@@ -5,8 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.github.chelovekkrokant.playlistmaker.creator.Creator
 import com.github.chelovekkrokant.playlistmaker.data.db.SearchHistoryRepositoryImpl
-import com.github.chelovekkrokant.playlistmaker.data.network.TrackRepositoryImpl
-import com.github.chelovekkrokant.playlistmaker.domain.api.TrackRepository
+import com.github.chelovekkrokant.playlistmaker.domain.api.TracksRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +16,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 class SearchViewModel(
-    private val trackRepository : TrackRepository
+    private val tracksRepository : TracksRepository
 ) : ViewModel() {
     private val searchHistoryRepository = SearchHistoryRepositoryImpl(scope = viewModelScope)
     private val _searchQuery = MutableStateFlow("")
@@ -46,7 +45,7 @@ class SearchViewModel(
             try {
                 _searchScreenState.update { SearchState.Searching }
                 searchHistoryRepository.addToHistory(request)
-                val list = trackRepository.searchTracks(expression = request)
+                val list = tracksRepository.searchTracks(expression = request)
                 _searchScreenState.update { SearchState.Success(foundList = list) }
             } catch (e: IOException) {
                 _searchScreenState.update { SearchState.Fail(e.message.toString()) }
@@ -65,14 +64,14 @@ class SearchViewModel(
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return SearchViewModel(Creator.getTrackRepository()) as T
+                    return SearchViewModel(Creator.getTrackRepository(viewModelScope)) as T
                 }
             }
     }
 }
 
 class SearchViewModelUnrelevant(
-    private val tracksRepository: TrackRepository
+    private val tracksRepository: TracksRepository
 ) : ViewModel() {
     private val _searchScreenState = MutableStateFlow<SearchState>(SearchState.Initial)
     val searchScreenState  = _searchScreenState.asStateFlow()
@@ -95,7 +94,7 @@ class SearchViewModelUnrelevant(
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return SearchViewModel(Creator.getTrackRepository()) as T
+                    return SearchViewModel(Creator.getTrackRepository(viewModelScope)) as T
                 }
             }
     }

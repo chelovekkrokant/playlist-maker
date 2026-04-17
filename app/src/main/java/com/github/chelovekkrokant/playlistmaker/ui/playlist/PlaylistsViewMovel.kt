@@ -8,7 +8,7 @@ import com.github.chelovekkrokant.playlistmaker.data.network.TracksRepositoryImp
 import com.github.chelovekkrokant.playlistmaker.domain.Playlist
 import com.github.chelovekkrokant.playlistmaker.domain.Track
 import com.github.chelovekkrokant.playlistmaker.domain.api.PlaylistsRepository
-import com.github.chelovekkrokant.playlistmaker.domain.api.TrackRepository
+import com.github.chelovekkrokant.playlistmaker.domain.api.TracksRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class PlaylistsViewModel() : ViewModel() {
     private val playlistsRepository: PlaylistsRepository =
         PlaylistsRepositoryImpl(scope = viewModelScope)
-    private val tracksRepository: TrackRepository = TracksRepositoryImpl(scope = viewModelScope)
+    private val tracksRepository: TracksRepository = TracksRepositoryImpl(scope = viewModelScope)
     // Используем мок базы вместо репозитория
     private val databaseRepository: DatabaseMock = DatabaseMock(scope = viewModelScope)
 

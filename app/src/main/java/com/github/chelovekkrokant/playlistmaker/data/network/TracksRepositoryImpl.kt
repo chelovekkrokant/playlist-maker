@@ -2,7 +2,7 @@ package com.github.chelovekkrokant.playlistmaker.data.network
 
 import com.github.chelovekkrokant.playlistmaker.data.db.DatabaseMock
 import com.github.chelovekkrokant.playlistmaker.domain.Track
-import com.github.chelovekkrokant.playlistmaker.domain.api.TrackRepository
+import com.github.chelovekkrokant.playlistmaker.domain.api.TracksRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 class TracksRepositoryImpl(
     private val scope: CoroutineScope,
     //private val storage: Storage
-) : TrackRepository {
+) : TracksRepository {
     private val database = DatabaseMock(
         scope = scope
     )

@@ -31,4 +31,10 @@
     <string name="search_placeholder">Введите строку для поиска</string>
     <string name="no_songs_found">По вашему запросу треков не найдено</string>
     <string name="error">Ошибка</string>
+
+    <!-- New Playlist Screen -->
+    <string name="new_playlist_title">Новый плейлист</string>
+    <string name="new_playlist_name_hint">Название*</string>
+    <string name="new_playlist_description_hint">Описание</string>
+    <string name="new_playlist_create">Создать</string>
 </resources>
