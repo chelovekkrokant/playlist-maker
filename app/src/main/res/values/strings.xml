@@ -38,4 +38,5 @@
     <string name="new_playlist_description_hint">Описание</string>
     <string name="new_playlist_create">Создать</string>
     <string name="add_playlist">Добавить плейлист</string>
+    <string name="tracks_count">%d треков</string>
 </resources>

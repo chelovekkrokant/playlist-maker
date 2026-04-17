@@ -33,11 +33,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.chelovekkrokant.playlistmaker.R
 
-private val ScreenBackground = Color(0xFFF2F2F7)
+private val ScreenBackground = Color(0xFFFFFFFF)
 private val FieldBorderColor = Color(0xFFAEAFB4)
 private val PlaceholderColor = Color(0xFFAEAFB4)
 private val ButtonColor = Color(0xFFAEAFB4)
@@ -81,6 +82,22 @@ fun OutlinedInputField(
 fun NewPlaylistScreen(
     modifier: Modifier = Modifier,
     playlistsViewModel: PlaylistsViewModel,
+    onBack: () -> Unit
+) {
+    NewPlaylistContent(
+        modifier = modifier,
+        onSave = { name, description ->
+            playlistsViewModel.createNewPlayList(name, description)
+            onBack()
+        },
+        onBack = onBack
+    )
+}
+
+@Composable
+private fun NewPlaylistContent(
+    modifier: Modifier = Modifier,
+    onSave: (String, String) -> Unit,
     onBack: () -> Unit
 ) {
     var name by remember { mutableStateOf("") }
@@ -147,13 +164,8 @@ fun NewPlaylistScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp)
-                    .background(ButtonColor, RoundedCornerShape(26.dp))
-                    .clickable {
-                        if (name.isNotBlank()) {
-                            playlistsViewModel.createNewPlayList(name, description)
-                            onBack()
-                        }
-                    },
+                    .background(ButtonColor, RoundedCornerShape(8.dp))
+                    .clickable { if (name.isNotBlank()) onSave(name, description) },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -168,3 +180,8 @@ fun NewPlaylistScreen(
     }
 }
 
+@Preview(name = "NewPlaylistScreen", widthDp = 360, heightDp = 800, showBackground = true)
+@Composable
+private fun NewPlaylistScreenPreview() {
+    NewPlaylistContent(onSave = { _, _ -> }, onBack = {})
+}
