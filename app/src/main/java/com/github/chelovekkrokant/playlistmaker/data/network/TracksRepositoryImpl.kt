@@ -1,42 +1,37 @@
 package com.github.chelovekkrokant.playlistmaker.data.network
 
-import com.github.chelovekkrokant.playlistmaker.data.db.DatabaseMock
+import com.github.chelovekkrokant.playlistmaker.data.NetworkClient
+import com.github.chelovekkrokant.playlistmaker.data.dto.TracksSearchRequest
+import com.github.chelovekkrokant.playlistmaker.data.dto.TracksSearchResponse
+import com.github.chelovekkrokant.playlistmaker.data.repository.TracksRepository
+import com.github.chelovekkrokant.playlistmaker.domain.SearchResult
 import com.github.chelovekkrokant.playlistmaker.domain.Track
-import com.github.chelovekkrokant.playlistmaker.domain.api.TracksRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
+class TracksRepositoryImpl(private val networkClient: NetworkClient) : TracksRepository {
 
-class TracksRepositoryImpl(
-    private val scope: CoroutineScope,
-) : TracksRepository {
-    private val database = DatabaseMock(scope = scope)
-
-    override suspend fun searchTracks(expression: String): List<Track> {
-        return database.searchTracks(expression)
+    override suspend fun searchTracks(query: String): SearchResult {
+        val response = networkClient.doRequest(TracksSearchRequest(query))
+        return when {
+            response.resultCode == -1 -> SearchResult.NetworkError
+            response.resultCode == 200 && response is TracksSearchResponse ->
+                SearchResult.Success(response.results.map { dto ->
+                    Track(
+                        id = 0L,
+                        trackName = dto.trackName ?: "",
+                        artistName = dto.artistName ?: "",
+                        trackTime = formatMillis(dto.trackTimeMillis ?: 0L),
+                        image = dto.artworkUrl100 ?: "",
+                        favorite = false,
+                        playlistId = 0L
+                    )
+                })
+            else -> SearchResult.ServerError
+        }
     }
 
-    override fun getTrackByNameAndArtist(track: Track): Flow<Track?> {
-        return database.getTrackByNameAndArtist(track)
-    }
-
-    override suspend fun insertTrackToPlaylist(track: Track, playlistId: Long) {
-        database.insertTrack(track.copy(playlistId = playlistId))
-    }
-
-    override suspend fun deleteTrackFromPlaylist(track: Track) {
-        database.insertTrack(track.copy(playlistId = 0))
-    }
-
-    override suspend fun updateTrackFavoriteStatus(track: Track, isFavorite: Boolean) {
-        database.insertTrack(track.copy(favorite = isFavorite))
-    }
-
-    override fun deleteTracksByPlaylistId(playlistId: Long) {
-        database.deleteTracksByPlaylistId(playlistId)
-    }
-
-    override fun getFavoriteTracks(): Flow<List<Track>> {
-        return database.getFavoriteTracks()
-    }
+    private fun formatMillis(millis: Long): String =
+        SimpleDateFormat("mm:ss", Locale.getDefault()).format(Date(millis))
 }
