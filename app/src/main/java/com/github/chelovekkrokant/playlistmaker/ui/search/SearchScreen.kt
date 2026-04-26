@@ -138,7 +138,7 @@ fun SearchScreen(
     searchViewModel: SearchViewModel,
     onClick: (Int?) -> Unit
 ) {
-    val screenState by searchViewModel.searchScreenState.collectAsState()
+    val screenState by searchViewModel.searchState.collectAsState()
     var historyList by remember { mutableStateOf<List<String>>(emptyList()) }
     var text by remember { mutableStateOf("") }
     var isFocused by remember { mutableStateOf(false) }
@@ -155,7 +155,7 @@ fun SearchScreen(
 
     LaunchedEffect(screenState) {
         when (screenState) {
-            is SearchState.Success -> focusManager.clearFocus()
+            is SearchScreenState.Content -> focusManager.clearFocus()
             else -> Unit
         }
     }
@@ -258,7 +258,7 @@ fun SearchScreen(
 
         // Контент
         when (screenState) {
-            is SearchState.Initial -> {
+            is SearchScreenState.Empty -> {
                 if (text.isNotEmpty()) {
                     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
@@ -266,37 +266,35 @@ fun SearchScreen(
                 }
             }
 
-            is SearchState.Searching -> {
+            is SearchScreenState.Loading -> {
                 Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
 
-            is SearchState.Success -> {
-                val tracks = (screenState as SearchState.Success).foundList
-                if (tracks.isEmpty()) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(stringResource(R.string.no_songs_found), color = Color.Red)
-                    }
-                } else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(ScreenBackground)
-                    ) {
-                        items(tracks.size) { index ->
-                            TrackListItem(track = tracks[index]) { onClick(index) }
-                        }
+            is SearchScreenState.NothingFound -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(stringResource(R.string.no_songs_found), color = Color.Red)
+                }
+            }
+
+            is SearchScreenState.Content -> {
+                val tracks = (screenState as SearchScreenState.Content).tracks
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(ScreenBackground)
+                ) {
+                    items(tracks.size) { index ->
+                        TrackListItem(track = tracks[index]) { onClick(index) }
                     }
                 }
             }
 
-            is SearchState.Fail -> {
-                val error = (screenState as SearchState.Fail).error
+            is SearchScreenState.Error -> {
                 Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(stringResource(R.string.error), color = Color.Red)
-                        Text(error, color = Color.Red, fontSize = 12.sp)
                     }
                 }
             }
