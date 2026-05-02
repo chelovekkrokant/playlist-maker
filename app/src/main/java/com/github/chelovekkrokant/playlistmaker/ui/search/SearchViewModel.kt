@@ -33,7 +33,12 @@ class SearchViewModel : ViewModel() {
         _searchQuery.value = query
     }
 
+    private var lastQuery = ""
+
+    fun retry() = search(lastQuery)
+
     fun search(query: String) {
+        lastQuery = query
         viewModelScope.launch {
             searchState.value = SearchScreenState.Loading
             searchHistoryRepository.addToHistory(query)
