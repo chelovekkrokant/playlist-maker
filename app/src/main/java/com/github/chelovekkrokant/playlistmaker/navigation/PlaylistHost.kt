@@ -11,6 +11,8 @@ import androidx.navigation.navArgument
 import com.github.chelovekkrokant.playlistmaker.ui.main.MainScreen
 import com.github.chelovekkrokant.playlistmaker.ui.playlist.FavoritesScreen
 import com.github.chelovekkrokant.playlistmaker.ui.playlist.NewPlaylistScreen
+import com.github.chelovekkrokant.playlistmaker.ui.playlist.PlaylistScreen
+import com.github.chelovekkrokant.playlistmaker.ui.playlist.PlaylistViewModel
 import com.github.chelovekkrokant.playlistmaker.ui.playlist.PlaylistsScreen
 import com.github.chelovekkrokant.playlistmaker.ui.playlist.PlaylistsViewModel
 import com.github.chelovekkrokant.playlistmaker.ui.playlist.TrackDetailsScreen
@@ -60,7 +62,7 @@ fun PlaylistHost(navController: NavHostController) {
                 modifier = Modifier,
                 playlistsViewModel = playlistsViewModel,
                 addNewPlaylist = { navController.navigate(Screen.NewPlaylist.name) },
-                navigateToPlaylist = { navController.navigate("${Screen.TrackDetails.name}/$it") },
+                navigateToPlaylist = { navController.navigate("${Screen.PlaylistDetail.name}/$it") },
                 navigateBack = { navController.popBackStack() }
             )
         }
@@ -90,6 +92,22 @@ fun PlaylistHost(navController: NavHostController) {
                     navigateBack = { navController.popBackStack() }
                 )
             }
+        }
+        composable(
+            route = "${Screen.PlaylistDetail.name}/{playlistId}",
+            arguments = listOf(navArgument("playlistId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val playlistId = backStackEntry.arguments?.getLong("playlistId") ?: 0L
+            val vm: PlaylistViewModel = viewModel(factory = PlaylistViewModel.factory(playlistId))
+            PlaylistScreen(
+                modifier = Modifier,
+                playlistViewModel = vm,
+                navigateToTrack = { track ->
+                    playlistsViewModel.selectedTrack = track
+                    navController.navigate("${Screen.TrackDetails.name}/${track.id}")
+                },
+                navigateBack = { navController.popBackStack() }
+            )
         }
     }
 }

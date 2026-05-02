@@ -92,12 +92,11 @@ private fun PlaylistsLayout(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 8.dp)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(horizontal = 13.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(

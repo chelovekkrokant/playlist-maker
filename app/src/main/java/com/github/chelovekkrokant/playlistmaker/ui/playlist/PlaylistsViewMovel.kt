@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 class PlaylistsViewModel() : ViewModel() {
     var selectedTrack: Track? = null
     private val playlistsRepository: PlaylistsRepository = PlaylistsRepositoryImpl(scope = viewModelScope)
-    private val databaseRepository: DatabaseMock = DatabaseMock(scope = viewModelScope)
+    private val databaseRepository: DatabaseMock = DatabaseMock
 
     val playlists: Flow<List<Playlist>> = flow {
         val collectedPlaylists = mutableListOf<Playlist>()
