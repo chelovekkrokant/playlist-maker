@@ -3,24 +3,20 @@ package com.github.chelovekkrokant.playlistmaker.ui.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.github.chelovekkrokant.playlistmaker.creator.Creator
 import com.github.chelovekkrokant.playlistmaker.data.db.SearchHistoryRepositoryImpl
-import com.github.chelovekkrokant.playlistmaker.data.network.TracksRepositoryImpl
-import com.github.chelovekkrokant.playlistmaker.domain.api.TracksRepository
-import kotlinx.coroutines.Dispatchers
+import com.github.chelovekkrokant.playlistmaker.data.repository.TracksRepository
+import com.github.chelovekkrokant.playlistmaker.domain.SearchResult
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.IOException
 
 class SearchViewModel : ViewModel() {
-    private val tracksRepository: TracksRepository = TracksRepositoryImpl(scope = viewModelScope)
+    private val tracksRepository: TracksRepository = Creator.getTracksRepository()
     private val searchHistoryRepository = SearchHistoryRepositoryImpl(scope = viewModelScope)
     private val _searchQuery = MutableStateFlow("")
-    private val _searchScreenState = MutableStateFlow<SearchState>(SearchState.Initial)
-    val searchScreenState = _searchScreenState.asStateFlow()
+    val searchState = MutableStateFlow<SearchScreenState>(SearchScreenState.Empty)
 
     init {
         viewModelScope.launch {
@@ -28,9 +24,7 @@ class SearchViewModel : ViewModel() {
                 .debounce(1000)
                 .distinctUntilChanged()
                 .collect { query ->
-                    if (query.isNotEmpty()) {
-                        performSearch(query)
-                    }
+                    if (query.isNotEmpty()) search(query)
                 }
         }
     }
@@ -39,36 +33,41 @@ class SearchViewModel : ViewModel() {
         _searchQuery.value = query
     }
 
-    private fun performSearch(request: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _searchScreenState.update { SearchState.Searching }
-                searchHistoryRepository.addToHistory(request)
-                val list = tracksRepository.searchTracks(expression = request)
-                _searchScreenState.update { SearchState.Success(foundList = list) }
-            } catch (e: IOException) {
-                _searchScreenState.update { SearchState.Fail(e.message.toString()) }
+    private var lastQuery = ""
+
+    fun retry() = search(lastQuery)
+
+    fun search(query: String) {
+        lastQuery = query
+        viewModelScope.launch {
+            searchState.value = SearchScreenState.Loading
+            searchHistoryRepository.addToHistory(query)
+            when (val result = tracksRepository.searchTracks(query)) {
+                is SearchResult.Success ->
+                    searchState.value =
+                        if (result.tracks.isEmpty()) SearchScreenState.NothingFound
+                        else SearchScreenState.Content(result.tracks)
+                is SearchResult.NetworkError -> searchState.value = SearchScreenState.Error
+                is SearchResult.ServerError -> searchState.value = SearchScreenState.Error
             }
         }
     }
 
     fun clearSearch() {
-        _searchScreenState.update { SearchState.Initial }
+        searchState.value = SearchScreenState.Empty
     }
 
     fun getHistoryList() = searchHistoryRepository.getHistoryRequests()
 
-    fun getFoundTracks(): List<com.github.chelovekkrokant.playlistmaker.domain.Track> {
-        return (_searchScreenState.value as? SearchState.Success)?.foundList ?: emptyList()
-    }
+    fun getFoundTracks() =
+        (searchState.value as? SearchScreenState.Content)?.tracks ?: emptyList()
 
     companion object {
         fun getViewModelFactory(): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return SearchViewModel() as T
-                }
+                override fun <T : ViewModel> create(modelClass: Class<T>): T =
+                    SearchViewModel() as T
             }
     }
 }

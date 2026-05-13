@@ -4,6 +4,7 @@ import com.github.chelovekkrokant.playlistmaker.domain.Playlist
 import com.github.chelovekkrokant.playlistmaker.domain.Track
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,7 +16,9 @@ private fun millisToTime(ms: Long): String {
     return "%02d:%02d".format(m, s - m * 60)
 }
 
-class DatabaseMock(val scope: CoroutineScope) {
+object DatabaseMock {
+
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     private val historyList = mutableListOf<String>()
     private val _historyUpdates = MutableSharedFlow<Unit>()
@@ -62,7 +65,9 @@ class DatabaseMock(val scope: CoroutineScope) {
     }
 
     fun getPlaylist(id: Long): Flow<Playlist?> = flow {
-        emit(playlists.find { it.id == id })
+        val playlist = playlists.find { it.id == id }
+        val playlistTracks = tracks.filter { it.playlistId == id }
+        emit(playlist?.copy(tracks = playlistTracks))
     }
 
     fun addNewPlaylist(name: String, description: String) {

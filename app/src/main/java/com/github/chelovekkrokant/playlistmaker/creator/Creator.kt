@@ -1,17 +1,20 @@
 package com.github.chelovekkrokant.playlistmaker.creator
 
+import com.github.chelovekkrokant.playlistmaker.data.network.ITunesApiService
+import com.github.chelovekkrokant.playlistmaker.data.network.RetrofitNetworkClient
 import com.github.chelovekkrokant.playlistmaker.data.network.TracksRepositoryImpl
-import com.github.chelovekkrokant.playlistmaker.domain.TrackSearchInteractorImpl
-import com.github.chelovekkrokant.playlistmaker.domain.api.TrackSearchInteractor
-import com.github.chelovekkrokant.playlistmaker.domain.api.TracksRepository
-import kotlinx.coroutines.CoroutineScope
+import com.github.chelovekkrokant.playlistmaker.data.repository.TracksRepository
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 object Creator {
-    fun getTrackRepository(scope: CoroutineScope): TracksRepository {
-        return TracksRepositoryImpl(scope)
-    }
+    private val retrofit = Retrofit.Builder()
+        .baseUrl("https://itunes.apple.com/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
 
-    fun provideTrackSearchInteractor(scope: CoroutineScope): TrackSearchInteractor {
-        return TrackSearchInteractorImpl(getTrackRepository(scope))
-    }
+    private val api: ITunesApiService = retrofit.create(ITunesApiService::class.java)
+
+    fun getTracksRepository(): TracksRepository =
+        TracksRepositoryImpl(RetrofitNetworkClient(api))
 }

@@ -31,6 +31,11 @@
     <string name="search_placeholder">Введите строку для поиска</string>
     <string name="no_songs_found">По вашему запросу треков не найдено</string>
     <string name="error">Ошибка</string>
+    <string name="search_button">Найти</string>
+    <string name="retry_button">Обновить</string>
+    <string name="search_error_title">Проблемы со связью</string>
+    <string name="search_error_subtitle">Загрузка не удалась. Проверьте\nподключение к интернету</string>
+    <string name="search_nothing_found">Ничего не нашлось</string>
 
     <!-- New Playlist Screen -->
     <string name="new_playlist_title">Новый плейлист</string>
