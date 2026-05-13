@@ -1,7 +1,6 @@
 package com.github.chelovekkrokant.playlistmaker.ui.playlist
 
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.github.chelovekkrokant.playlistmaker.R
 import com.github.chelovekkrokant.playlistmaker.domain.Playlist
 import com.github.chelovekkrokant.playlistmaker.domain.Track
@@ -116,9 +116,12 @@ private fun TrackDetailsLayout(
             contentDescription = stringResource(R.string.cd_back)
         )
         Spacer(modifier = Modifier.height(24.dp))
-        Image(
-            painter = painterResource(id = R.drawable.ic_music),
+        AsyncImage(
+            model = track.image.replace("100x100bb", "600x600bb").ifEmpty { null },
             contentDescription = track.trackName,
+            placeholder = painterResource(R.drawable.outline_music_video_24),
+            error = painterResource(R.drawable.outline_music_video_24),
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
@@ -140,7 +143,7 @@ private fun TrackDetailsLayout(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
+                    painter = painterResource(R.drawable.outline_library_add_24),
                     contentDescription = "Добавить в плейлист",
                     tint = Color.White,
                     modifier = Modifier.size(28.dp)

@@ -71,7 +71,11 @@ fun PlaylistHost(navController: NavHostController) {
             FavoritesScreen(
                 modifier = Modifier,
                 playlistsViewModel = playlistsViewModel,
-                navigateBack = { navController.popBackStack() }
+                navigateBack = { navController.popBackStack() },
+                navigateToTrack = { track ->
+                    playlistsViewModel.selectedTrack = track
+                    navController.navigate("${Screen.TrackDetails.name}/${track.id}")
+                }
             )
         }
         composable(Screen.NewPlaylist.name) {

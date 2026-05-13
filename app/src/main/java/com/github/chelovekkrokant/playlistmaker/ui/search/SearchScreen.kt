@@ -84,8 +84,8 @@ fun TrackListItem(
         AsyncImage(
             model = track.image.ifEmpty { null },
             contentDescription = null,
-            placeholder = painterResource(R.drawable.ic_music),
-            error = painterResource(R.drawable.ic_music),
+            placeholder = painterResource(R.drawable.outline_music_video_24),
+            error = painterResource(R.drawable.outline_music_video_24),
             contentScale = ContentScale.Crop,
             modifier = Modifier.size(45.dp)
         )
