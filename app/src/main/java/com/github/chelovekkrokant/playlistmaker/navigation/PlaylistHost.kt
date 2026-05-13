@@ -2,7 +2,6 @@ package com.github.chelovekkrokant.playlistmaker.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -19,10 +18,12 @@ import com.github.chelovekkrokant.playlistmaker.ui.playlist.TrackDetailsScreen
 import com.github.chelovekkrokant.playlistmaker.ui.search.SearchScreen
 import com.github.chelovekkrokant.playlistmaker.ui.search.SearchViewModel
 import com.github.chelovekkrokant.playlistmaker.ui.settings.SettingsScreen
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun PlaylistHost(navController: NavHostController) {
-    val playlistsViewModel: PlaylistsViewModel = viewModel()
+    val playlistsViewModel: PlaylistsViewModel = koinViewModel()
 
     NavHost(
         navController = navController,
@@ -37,7 +38,7 @@ fun PlaylistHost(navController: NavHostController) {
             )
         }
         composable(Screen.Search.name) {
-            val searchViewModel: SearchViewModel = viewModel(factory = SearchViewModel.getViewModelFactory())
+            val searchViewModel: SearchViewModel = koinViewModel()
             SearchScreen(
                 modifier = Modifier,
                 searchViewModel = searchViewModel,
@@ -98,7 +99,7 @@ fun PlaylistHost(navController: NavHostController) {
             arguments = listOf(navArgument("playlistId") { type = NavType.LongType })
         ) { backStackEntry ->
             val playlistId = backStackEntry.arguments?.getLong("playlistId") ?: 0L
-            val vm: PlaylistViewModel = viewModel(factory = PlaylistViewModel.factory(playlistId))
+            val vm: PlaylistViewModel = koinViewModel(parameters = { parametersOf(playlistId) })
             PlaylistScreen(
                 modifier = Modifier,
                 playlistViewModel = vm,

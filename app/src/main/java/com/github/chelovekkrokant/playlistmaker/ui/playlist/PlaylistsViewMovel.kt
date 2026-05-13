@@ -2,30 +2,24 @@ package com.github.chelovekkrokant.playlistmaker.ui.playlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.chelovekkrokant.playlistmaker.data.db.DatabaseMock
-import com.github.chelovekkrokant.playlistmaker.data.network.PlaylistsRepositoryImpl
 import com.github.chelovekkrokant.playlistmaker.domain.Playlist
 import com.github.chelovekkrokant.playlistmaker.domain.Track
 import com.github.chelovekkrokant.playlistmaker.domain.api.PlaylistsRepository
+import com.github.chelovekkrokant.playlistmaker.domain.api.TracksRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
-class PlaylistsViewModel() : ViewModel() {
-    var selectedTrack: Track? = null
-    private val playlistsRepository: PlaylistsRepository = PlaylistsRepositoryImpl(scope = viewModelScope)
-    private val databaseRepository: DatabaseMock = DatabaseMock
+class PlaylistsViewModel(
+    private val playlistsRepository: PlaylistsRepository,
+    private val tracksRepository: TracksRepository
+) : ViewModel() {
 
-    val playlists: Flow<List<Playlist>> = flow {
-        val collectedPlaylists = mutableListOf<Playlist>()
-        playlistsRepository.getAllPlaylists().collect { playlist ->
-            collectedPlaylists.addAll(playlist)
-            emit(collectedPlaylists.toList())
-        }
-    }
-    val favoriteList: Flow<List<Track>> = databaseRepository.getFavoriteTracks()
+    var selectedTrack: Track? = null
+
+    val playlists: Flow<List<Playlist>> = playlistsRepository.getAllPlaylists()
+    val favoriteList: Flow<List<Track>> = tracksRepository.getFavoriteTracks()
 
     fun createNewPlayList(namePlaylist: String, description: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -34,23 +28,23 @@ class PlaylistsViewModel() : ViewModel() {
     }
 
     suspend fun insertTrackToPlaylist(track: Track, playlistId: Long) {
-        databaseRepository.insertTrack(track.copy(playlistId = playlistId))
+        tracksRepository.insertTrackToPlaylist(track, playlistId)
     }
 
     suspend fun toggleFavorite(track: Track, isFavorite: Boolean) {
-        databaseRepository.insertTrack(track.copy(favorite = isFavorite))
+        tracksRepository.updateTrackFavoriteStatus(track, isFavorite)
     }
 
     suspend fun deleteTrackFromPlaylist(track: Track) {
-        databaseRepository.insertTrack(track.copy(playlistId = 0))
+        tracksRepository.deleteTrackFromPlaylist(track)
     }
 
     suspend fun deletePlaylistById(id: Long) {
-        databaseRepository.deleteTracksByPlaylistId(id)
+        tracksRepository.deleteTracksByPlaylistId(id)
         playlistsRepository.deletePlaylistById(id)
     }
 
     suspend fun isExist(track: Track): Track? {
-        return databaseRepository.getTrackByNameAndArtist(track = track).firstOrNull()
+        return tracksRepository.getTrackByNameAndArtist(track).firstOrNull()
     }
 }
