@@ -37,6 +37,10 @@
     <string name="search_error_subtitle">Загрузка не удалась. Проверьте\nподключение к интернету</string>
     <string name="search_nothing_found">Ничего не нашлось</string>
 
+    <!-- Favorites Screen -->
+    <string name="favorites_title">Избранные треки</string>
+    <string name="favorites_empty">Ваша медиатека пуста</string>
+
     <!-- New Playlist Screen -->
     <string name="new_playlist_title">Новый плейлист</string>
     <string name="new_playlist_name_hint">Название*</string>
