@@ -1,16 +1,18 @@
 package com.github.chelovekkrokant.playlistmaker.data.db
 
+import com.github.chelovekkrokant.playlistmaker.data.preferences.SearchHistoryPreferences
 import com.github.chelovekkrokant.playlistmaker.domain.api.SearchHistoryRepository
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
 
-class SearchHistoryRepositoryImpl(private val scope: CoroutineScope) : SearchHistoryRepository {
-    private val database = DatabaseMock
+class SearchHistoryRepositoryImpl(
+    private val preferences: SearchHistoryPreferences
+) : SearchHistoryRepository {
 
-    override fun getHistoryRequests(): List<String> {
-        return database.getHistoryRequests()
+    override fun getHistoryRequests(): List<String> = runBlocking {
+        preferences.getEntries()
     }
 
     override fun addToHistory(word: String) {
-        database.addToHistory(word = word)
+        preferences.addEntry(word)
     }
 }

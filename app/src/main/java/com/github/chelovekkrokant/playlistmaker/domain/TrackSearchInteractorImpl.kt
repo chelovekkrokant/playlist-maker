@@ -15,7 +15,7 @@ class TrackSearchInteractorImpl(private val repository: TracksRepository) : Trac
     override fun getFavoriteTracks(): Flow<List<Track>> =
         repository.getFavoriteTracks()
 
-    override fun deleteTracksByPlaylistId(playlistId: Long) =
+    override suspend fun deleteTracksByPlaylistId(playlistId: Long) =
         repository.deleteTracksByPlaylistId(playlistId)
 
     override suspend fun insertTrackToPlaylist(track: Track, playlistId: Long) =
