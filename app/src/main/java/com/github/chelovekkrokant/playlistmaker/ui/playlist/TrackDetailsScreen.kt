@@ -28,6 +28,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,6 +65,11 @@ fun TrackDetailsScreen(
     var showSheet by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+
+    LaunchedEffect(track.id) {
+        val dbTrack = playlistsViewModel.isExist(track)
+        if (dbTrack != null) isFavorite = dbTrack.favorite
+    }
 
     TrackDetailsLayout(
         track = track,
