@@ -1,5 +1,6 @@
 package com.github.chelovekkrokant.playlistmaker.navigation
 
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -26,6 +27,7 @@ fun PlaylistHost(navController: NavHostController) {
     val playlistsViewModel: PlaylistsViewModel = koinViewModel()
 
     NavHost(
+        modifier = Modifier.safeDrawingPadding(),
         navController = navController,
         startDestination = Screen.Main.name
     ) {
