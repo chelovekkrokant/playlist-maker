@@ -1,5 +1,6 @@
 package com.github.chelovekkrokant.playlistmaker.ui.playlist
 
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,11 +28,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import com.github.chelovekkrokant.playlistmaker.R
 import com.github.chelovekkrokant.playlistmaker.domain.Playlist
 import com.github.chelovekkrokant.playlistmaker.domain.Track
@@ -46,12 +51,24 @@ fun PlaylistListItem(playlist: Playlist, onClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Icon(
-            modifier = Modifier.size(48.dp),
-            imageVector = Icons.Filled.AddPhotoAlternate,
+        SubcomposeAsyncImage(
+            model = playlist.coverImageUri?.let { Uri.parse(it) },
             contentDescription = playlist.name,
-            tint = Color.Gray
-        )
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.size(48.dp)
+        ) {
+            if (painter.state is AsyncImagePainter.State.Success) {
+                SubcomposeAsyncImageContent()
+            } else {
+                Icon(
+                    imageVector = Icons.Filled.AddPhotoAlternate,
+                    contentDescription = null,
+                    tint = Color.Gray,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+        Spacer(modifier = Modifier.width(8.dp))
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.Start
@@ -142,9 +159,9 @@ private fun PlaylistsLayout(
 }
 
 private val previewPlaylists = listOf(
-    Playlist(1, "Любимые треки", "", List(3) { Track(it.toLong() + 1, "", "", "", "", false, 1) }),
-    Playlist(2, "Рок классика", "", List(5) { Track(it.toLong() + 4, "", "", "", "", false, 2) }),
-    Playlist(3, "Утренний", "", List(2) { Track(it.toLong() + 9, "", "", "", "", false, 3) }),
+    Playlist(id = 1, name = "Любимые треки", description = "", tracks = List(3) { Track(it.toLong() + 1, "", "", "", "", false, 1) }),
+    Playlist(id = 2, name = "Рок классика", description = "", tracks = List(5) { Track(it.toLong() + 4, "", "", "", "", false, 2) }),
+    Playlist(id = 3, name = "Утренний", description = "", tracks = List(2) { Track(it.toLong() + 9, "", "", "", "", false, 3) }),
 )
 
 @Preview(name = "PlaylistsScreen", widthDp = 360, heightDp = 800, showBackground = true)
