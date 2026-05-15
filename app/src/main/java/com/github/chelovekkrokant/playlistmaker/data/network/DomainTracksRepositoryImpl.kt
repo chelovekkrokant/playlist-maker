@@ -33,9 +33,7 @@ class DomainTracksRepositoryImpl(database: AppDatabase) : TracksRepository {
     }
 
     override suspend fun insertTrackToPlaylist(track: Track, playlistId: Long) {
-        val existing = dao.getTrackByNameAndArtist(track.trackName, track.artistName).first()
-        val isFavorite = existing?.favorite ?: track.favorite
-        dao.insertTrack(track.copy(playlistId = playlistId, favorite = isFavorite).toEntity())
+        dao.insertTrack(track.copy(playlistId = playlistId).toEntity())
     }
 
     override suspend fun deleteTrackFromPlaylist(track: Track) {

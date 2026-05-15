@@ -37,7 +37,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -340,7 +339,7 @@ fun SearchScreen(
     onClick: (Int?) -> Unit
 ) {
     val state by searchViewModel.searchState.collectAsState()
-    var query by rememberSaveable { mutableStateOf("") }
+    var query by remember { mutableStateOf("") }
     var historyList by remember { mutableStateOf<List<String>>(emptyList()) }
     var isFocused by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
@@ -348,7 +347,7 @@ fun SearchScreen(
 
     LaunchedEffect(query) {
         if (query.isEmpty()) {
-            historyList = searchViewModel.getHistoryList()
+            historyList = searchViewModel.getHistoryList().reversed()
             searchViewModel.clearSearch()
         }
         searchViewModel.updateQuery(query)
