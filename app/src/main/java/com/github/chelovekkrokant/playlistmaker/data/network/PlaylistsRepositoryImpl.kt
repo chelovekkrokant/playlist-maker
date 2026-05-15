@@ -32,8 +32,8 @@ class PlaylistsRepositoryImpl(database: AppDatabase) : PlaylistsRepository {
         }
     }
 
-    override suspend fun addNewPlaylist(name: String, description: String, coverImageUri: String?) {
-        playlistsDao.insertPlaylist(PlaylistEntity(name = name, description = description, coverImageUri = coverImageUri))
+    override suspend fun addNewPlaylist(name: String, description: String) {
+        playlistsDao.insertPlaylist(PlaylistEntity(name = name, description = description))
     }
 
     override suspend fun deletePlaylistById(id: Long) {

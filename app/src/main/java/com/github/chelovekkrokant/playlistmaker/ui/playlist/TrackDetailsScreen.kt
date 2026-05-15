@@ -28,7 +28,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,11 +64,6 @@ fun TrackDetailsScreen(
     var showSheet by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-
-    LaunchedEffect(track.id) {
-        val dbTrack = playlistsViewModel.isExist(track)
-        if (dbTrack != null) isFavorite = dbTrack.favorite
-    }
 
     TrackDetailsLayout(
         track = track,
@@ -206,8 +200,8 @@ private fun TrackDetailsLayout(
 
 private val previewTrack = Track(2, "Группа крови", "Кино", "04:43", "", false, 0)
 private val previewPlaylists = listOf(
-    Playlist(id = 1, name = "Любимые треки", description = "", tracks = List(3) { Track(it.toLong() + 1, "", "", "", "", false, 1) }),
-    Playlist(id = 2, name = "Рок классика", description = "", tracks = List(5) { Track(it.toLong() + 4, "", "", "", "", false, 2) }),
+    Playlist(1, "Любимые треки", "", List(3) { Track(it.toLong() + 1, "", "", "", "", false, 1) }),
+    Playlist(2, "Рок классика", "", List(5) { Track(it.toLong() + 4, "", "", "", "", false, 2) }),
 )
 
 @Preview(name = "TrackDetails", widthDp = 360, heightDp = 800, showBackground = true)
