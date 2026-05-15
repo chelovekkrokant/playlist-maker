@@ -17,6 +17,7 @@ import com.github.chelovekkrokant.playlistmaker.domain.api.PlaylistsRepository
 import com.github.chelovekkrokant.playlistmaker.domain.api.SearchHistoryRepository
 import com.github.chelovekkrokant.playlistmaker.domain.api.TracksRepository as DomainTracksRepository
 import com.github.chelovekkrokant.playlistmaker.ui.main.PlaylistMakerApp
+import com.github.chelovekkrokant.playlistmaker.ui.playlist.NewPlaylistViewModel
 import com.github.chelovekkrokant.playlistmaker.ui.playlist.PlaylistViewModel
 import com.github.chelovekkrokant.playlistmaker.ui.playlist.PlaylistsViewModel
 import com.github.chelovekkrokant.playlistmaker.ui.search.SearchViewModel
@@ -33,7 +34,7 @@ val databaseModule = module {
             androidContext(),
             AppDatabase::class.java,
             "playlists_maker"
-        ).build()
+        ).addMigrations(AppDatabase.MIGRATION_1_2).build()
     }
 }
 
@@ -60,6 +61,7 @@ val repositoryModule = module {
 
 val viewModelModule = module {
     viewModel { PlaylistsViewModel(get(), get()) }
-    viewModel { (playlistId: Long) -> PlaylistViewModel(playlistId, get()) }
+    viewModel { (playlistId: Long) -> PlaylistViewModel(playlistId, get(), get()) }
     viewModel { SearchViewModel(get(), get()) }
+    viewModel { NewPlaylistViewModel(get()) }
 }

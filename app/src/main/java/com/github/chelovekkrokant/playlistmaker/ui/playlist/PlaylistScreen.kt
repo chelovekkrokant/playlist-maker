@@ -1,5 +1,6 @@
 package com.github.chelovekkrokant.playlistmaker.ui.playlist
 
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,18 +16,27 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import com.github.chelovekkrokant.playlistmaker.domain.Playlist
 import com.github.chelovekkrokant.playlistmaker.domain.Track
 import com.github.chelovekkrokant.playlistmaker.ui.search.TrackListItem
@@ -45,7 +55,8 @@ fun PlaylistScreen(
         modifier = modifier,
         playlist = playlist,
         navigateToTrack = navigateToTrack,
-        navigateBack = navigateBack
+        navigateBack = navigateBack,
+        onRemoveTrack = { playlistViewModel.deleteTrackFromPlaylist(it) }
     )
 }
 
@@ -54,8 +65,28 @@ private fun PlaylistLayout(
     modifier: Modifier = Modifier,
     playlist: Playlist?,
     navigateToTrack: (Track) -> Unit,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    onRemoveTrack: (Track) -> Unit = {}
 ) {
+    var trackToDelete by remember { mutableStateOf<Track?>(null) }
+
+    trackToDelete?.let { track ->
+        AlertDialog(
+            onDismissRequest = { trackToDelete = null },
+            title = { Text("Удалить трек?") },
+            text = { Text("Вы хотите удалить трек из плейлиста?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    onRemoveTrack(track)
+                    trackToDelete = null
+                }) { Text("Да") }
+            },
+            dismissButton = {
+                TextButton(onClick = { trackToDelete = null }) { Text("Нет") }
+            }
+        )
+    }
+
     Column(modifier = modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
@@ -90,12 +121,23 @@ private fun PlaylistLayout(
                         .fillParentMaxHeight(0.5f),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.AddPhotoAlternate,
-                        contentDescription = null,
-                        tint = SubtitleColor,
-                        modifier = Modifier.size(120.dp)
-                    )
+                    SubcomposeAsyncImage(
+                        model = playlist.coverImageUri?.let { Uri.parse(it) },
+                        contentDescription = playlist.name,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        if (painter.state is AsyncImagePainter.State.Success) {
+                            SubcomposeAsyncImageContent()
+                        } else {
+                            Icon(
+                                imageVector = Icons.Filled.AddPhotoAlternate,
+                                contentDescription = null,
+                                tint = SubtitleColor,
+                                modifier = Modifier.size(120.dp)
+                            )
+                        }
+                    }
                 }
             }
 
@@ -133,9 +175,11 @@ private fun PlaylistLayout(
             }
 
             items(tracks.size) { index ->
-                TrackListItem(track = tracks[index]) {
-                    navigateToTrack(tracks[index])
-                }
+                TrackListItem(
+                    track = tracks[index],
+                    onClick = { navigateToTrack(tracks[index]) },
+                    onLongClick = { trackToDelete = tracks[index] }
+                )
             }
 
             item { Spacer(modifier = Modifier.height(16.dp)) }

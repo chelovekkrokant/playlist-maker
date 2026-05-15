@@ -3,6 +3,7 @@ package com.github.chelovekkrokant.playlistmaker.data.dto
 import com.google.gson.annotations.SerializedName
 
 data class TrackDto(
+    val trackId: Long?,
     val trackName: String?,
     val artistName: String?,
     val trackTimeMillis: Long?,

@@ -19,7 +19,7 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient) : TracksRep
             response.resultCode == 200 && response is TracksSearchResponse ->
                 SearchResult.Success(response.results.map { dto ->
                     Track(
-                        id = 0L,
+                        id = dto.trackId ?: 0L,
                         trackName = dto.trackName ?: "",
                         artistName = dto.artistName ?: "",
                         trackTime = formatMillis(dto.trackTimeMillis ?: 0L),

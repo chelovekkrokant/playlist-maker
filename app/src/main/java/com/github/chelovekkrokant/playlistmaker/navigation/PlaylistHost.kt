@@ -1,5 +1,6 @@
 package com.github.chelovekkrokant.playlistmaker.navigation
 
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -10,6 +11,7 @@ import androidx.navigation.navArgument
 import com.github.chelovekkrokant.playlistmaker.ui.main.MainScreen
 import com.github.chelovekkrokant.playlistmaker.ui.playlist.FavoritesScreen
 import com.github.chelovekkrokant.playlistmaker.ui.playlist.NewPlaylistScreen
+import com.github.chelovekkrokant.playlistmaker.ui.playlist.NewPlaylistViewModel
 import com.github.chelovekkrokant.playlistmaker.ui.playlist.PlaylistScreen
 import com.github.chelovekkrokant.playlistmaker.ui.playlist.PlaylistViewModel
 import com.github.chelovekkrokant.playlistmaker.ui.playlist.PlaylistsScreen
@@ -26,6 +28,7 @@ fun PlaylistHost(navController: NavHostController) {
     val playlistsViewModel: PlaylistsViewModel = koinViewModel()
 
     NavHost(
+        modifier = Modifier.safeDrawingPadding(),
         navController = navController,
         startDestination = Screen.Main.name
     ) {
@@ -79,9 +82,10 @@ fun PlaylistHost(navController: NavHostController) {
             )
         }
         composable(Screen.NewPlaylist.name) {
+            val newPlaylistViewModel: NewPlaylistViewModel = koinViewModel()
             NewPlaylistScreen(
                 modifier = Modifier,
-                playlistsViewModel = playlistsViewModel,
+                viewModel = newPlaylistViewModel,
                 onBack = { navController.popBackStack() }
             )
         }

@@ -48,4 +48,6 @@
     <string name="new_playlist_create">Создать</string>
     <string name="add_playlist">Добавить плейлист</string>
     <string name="tracks_count">%d треков</string>
+    <string name="playlist_cover">Обложка плейлиста</string>
+    <string name="add_cover">Добавить обложку</string>
 </resources>
