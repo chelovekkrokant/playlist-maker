@@ -16,11 +16,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,7 +55,8 @@ fun PlaylistScreen(
         modifier = modifier,
         playlist = playlist,
         navigateToTrack = navigateToTrack,
-        navigateBack = navigateBack
+        navigateBack = navigateBack,
+        onRemoveTrack = { playlistViewModel.deleteTrackFromPlaylist(it) }
     )
 }
 
@@ -59,8 +65,28 @@ private fun PlaylistLayout(
     modifier: Modifier = Modifier,
     playlist: Playlist?,
     navigateToTrack: (Track) -> Unit,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    onRemoveTrack: (Track) -> Unit = {}
 ) {
+    var trackToDelete by remember { mutableStateOf<Track?>(null) }
+
+    trackToDelete?.let { track ->
+        AlertDialog(
+            onDismissRequest = { trackToDelete = null },
+            title = { Text("Удалить трек?") },
+            text = { Text("Вы хотите удалить трек из плейлиста?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    onRemoveTrack(track)
+                    trackToDelete = null
+                }) { Text("Да") }
+            },
+            dismissButton = {
+                TextButton(onClick = { trackToDelete = null }) { Text("Нет") }
+            }
+        )
+    }
+
     Column(modifier = modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
@@ -149,9 +175,11 @@ private fun PlaylistLayout(
             }
 
             items(tracks.size) { index ->
-                TrackListItem(track = tracks[index]) {
-                    navigateToTrack(tracks[index])
-                }
+                TrackListItem(
+                    track = tracks[index],
+                    onClick = { navigateToTrack(tracks[index]) },
+                    onLongClick = { trackToDelete = tracks[index] }
+                )
             }
 
             item { Spacer(modifier = Modifier.height(16.dp)) }

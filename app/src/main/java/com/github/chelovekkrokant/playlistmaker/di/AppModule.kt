@@ -61,7 +61,7 @@ val repositoryModule = module {
 
 val viewModelModule = module {
     viewModel { PlaylistsViewModel(get(), get()) }
-    viewModel { (playlistId: Long) -> PlaylistViewModel(playlistId, get()) }
+    viewModel { (playlistId: Long) -> PlaylistViewModel(playlistId, get(), get()) }
     viewModel { SearchViewModel(get(), get()) }
     viewModel { NewPlaylistViewModel(get()) }
 }
