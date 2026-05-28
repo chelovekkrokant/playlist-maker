@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">Playlist maker</string>
+    <string name="email_address">minorzen2@gmail.com</string>
+    <string name="email_body">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="email_tag">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="user_agreement">https://yandex.ru/legal/practicum_offer/ru/</string>
+    <string name="settings_title">Настройки</string>
+    <string name="settings_back">Назад</string>
+    <string name="settings_dark_theme">Тёмная тема</string>
+    <string name="settings_share">Поделиться приложением</string>
+    <string name="settings_support">Написать в поддержку</string>
+    <string name="settings_agreement">Пользовательское соглашение</string>
+    <string name="share_app_link">https://practicum.yandex.ru/android-developer/</string>
+
+    <!-- Main Screen -->
+    <string name="menu_search">Поиск</string>
+    <string name="menu_playlists">Плейлисты</string>
+    <string name="menu_library">Избранное</string>
+    <string name="toast_playlists">Нажата кнопка "Плейлисты"</string>
+    <string name="toast_library">Нажата кнопка "Избранное"</string>
+
+    <!-- Search Screen -->
+    <string name="search_hint">Поиск</string>
+    <string name="cd_back">Назад</string>
+    <string name="cd_search_icon">Поиск</string>
+    <string name="cd_clear">Очистить</string>
+    <string name="search_icon">Поиск</string>
+    <string name="songs">Песни</string>
+    <string name="search_songs_placeholder">Искать песни</string>
+    <string name="clear_search">Очистить поиск</string>
+    <string name="search_placeholder">Введите строку для поиска</string>
+    <string name="no_songs_found">По вашему запросу треков не найдено</string>
+    <string name="error">Ошибка</string>
+    <string name="search_button">Найти</string>
+    <string name="retry_button">Обновить</string>
+    <string name="search_error_title">Проблемы со связью</string>
+    <string name="search_error_subtitle">Загрузка не удалась. Проверьте\nподключение к интернету</string>
+    <string name="search_nothing_found">Ничего не нашлось</string>
+
+    <!-- Favorites Screen -->
+    <string name="favorites_title">Избранные треки</string>
+    <string name="favorites_empty">Ваша медиатека пуста</string>
+
+    <!-- New Playlist Screen -->
+    <string name="new_playlist_title">Новый плейлист</string>
+    <string name="new_playlist_name_hint">Название*</string>
+    <string name="new_playlist_description_hint">Описание</string>
+    <string name="new_playlist_create">Создать</string>
+    <string name="add_playlist">Добавить плейлист</string>
+    <string name="tracks_count">%d треков</string>
+    <string name="playlist_cover">Обложка плейлиста</string>
+    <string name="add_cover">Добавить обложку</string>
+</resources>
